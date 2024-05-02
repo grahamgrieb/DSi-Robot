@@ -1,0 +1,1 @@
+penguin.o: penguin.s

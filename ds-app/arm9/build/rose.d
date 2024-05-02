@@ -1,0 +1,1 @@
+rose.o: rose.s
