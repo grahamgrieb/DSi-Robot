@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 0)
+  (lib (name "ESP PCB-eagle-import")(type "KiCad")(uri "${KIPRJMOD}/ESP PCB-eagle-import.kicad_sym")(options "")(descr ""))
+)
