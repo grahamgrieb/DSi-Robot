@@ -5,6 +5,9 @@
 ifeq ($(strip $(DEVKITARM)),)
 $(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM")
 endif
+ifeq ($(strip $(LIBCAMERA)),)
+$(error "Please set LIBCAMERA in your environment. export LIBCAMERA=<path to>libcamera")
+endif
 
 
 include $(DEVKITARM)/ds_rules
