@@ -457,7 +457,7 @@
       "version": 1
     },
     "net_format_name": "",
-    "page_layout_descr_file": "",
+    "page_layout_descr_file": "empty.kicad_wks",
     "plot_directory": "",
     "spice_current_sheet_as_root": false,
     "spice_external_command": "spice \"%I\"",
@@ -467,6 +467,11 @@
     "subpart_first_id": 65,
     "subpart_id_separator": 0
   },
-  "sheets": [],
+  "sheets": [
+    [
+      "d2d679ee-cdfd-4a56-9660-534e55f0cb8f",
+      ""
+    ]
+  ],
   "text_variables": {}
 }
