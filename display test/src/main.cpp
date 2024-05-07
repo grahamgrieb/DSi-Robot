@@ -250,5 +250,5 @@ void setup () {
   tft.graphicsMode();                 // go back to graphics mode
   tft.fillScreen(RA8875_BLACK);
   tft.graphicsMode();
-  bmpDraw("/parrot.bmp", 0, 0);
+  bmpDraw("/ds.bmp", 0, 0);
 }
