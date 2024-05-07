@@ -9,6 +9,7 @@ SpriteEntry OAMCopy[128];
 #include "rose.h"
 #include "dandelion.h"
 #include "ball.h"
+
 void screenshot(u8 *buffer)
 {
 	/*u8 vram_cr_temp=VRAM_C_CR;
@@ -16,10 +17,11 @@ void screenshot(u8 *buffer)
 	u8* vram_temp=(u8*)malloc(128*1024);
 	dmaCopy(VRAM_B, vram_temp, 128*1024);*/
 	//VRAM_C_CR=VRAM_C_LCD|VRAM_ENABLE;
-	vramSetBankC(VRAM_C_LCD);
-	REG_DISPCAPCNT = DCAP_BANK(2) | DCAP_ENABLE | DCAP_SIZE(3) | DCAP_MODE(0) | DCAP_SRC_A(0) ; //|DCAP_SRC_B(1);
+	vramSetBankD(VRAM_D_LCD);
+	REG_DISPCAPCNT = DCAP_BANK(3) | DCAP_ENABLE | DCAP_SIZE(3) | DCAP_MODE(0) | DCAP_SRC_A(0) ; //|DCAP_SRC_B(1);
 	while (REG_DISPCAPCNT & DCAP_ENABLE);
-	dmaCopy(VRAM_C, buffer, 256 * 192 * 2);
+	dmaCopy(VRAM_D, buffer, 256 * 192 * 2);
+	
 	//VRAM_C_CR=0x00;
 	/*dmaCopy(vram_temp, VRAM_B, 128*1024);
 
@@ -27,6 +29,58 @@ void screenshot(u8 *buffer)
 
 	free(vram_temp);*/
 }
+/*void screenshotbmp(const char* filename) {
+
+	fatInitDefault();
+	FILE* file=fopen(filename, "wb");
+
+	REG_DISPCAPCNT=DCAP_BANK(3)|DCAP_ENABLE|DCAP_SIZE(3);
+	while(REG_DISPCAPCNT & DCAP_ENABLE);
+
+	u8* temp=(u8*)malloc(256*192*3+sizeof(INFOHEADER)+sizeof(HEADER));
+
+	HEADER* header=(HEADER*)temp;
+	INFOHEADER* infoheader=(INFOHEADER*)(temp+sizeof(HEADER));
+
+	write16(&header->type, 0x4D42);
+	write32(&header->size, 256*192*3+sizeof(INFOHEADER)+sizeof(HEADER));
+	write32(&header->offset, sizeof(INFOHEADER)+sizeof(HEADER));
+	write16(&header->reserved1, 0);
+	write16(&header->reserved2, 0);
+
+	write16(&infoheader->bits, 24);
+	write32(&infoheader->size, sizeof(INFOHEADER));
+	write32(&infoheader->compression, 0);
+	write32(&infoheader->width, 256);
+	write32(&infoheader->height, 192);
+	write16(&infoheader->planes, 1);
+	write32(&infoheader->imagesize, 256*192*3);
+	write32(&infoheader->xresolution, 0);
+	write32(&infoheader->yresolution, 0);
+	write32(&infoheader->importantcolours, 0);
+	write32(&infoheader->ncolours, 0);
+
+	for(int y=0;y<192;y++)
+	{
+		for(int x=0;x<256;x++)
+		{
+			u16 color=VRAM_D[256*192-y*256+x];
+
+			u8 b=(color&31)<<3;
+			u8 g=((color>>5)&31)<<3;
+			u8 r=((color>>10)&31)<<3;
+
+			temp[((y*256)+x)*3+sizeof(INFOHEADER)+sizeof(HEADER)]=r;
+			temp[((y*256)+x)*3+1+sizeof(INFOHEADER)+sizeof(HEADER)]=g;
+			temp[((y*256)+x)*3+2+sizeof(INFOHEADER)+sizeof(HEADER)]=b;
+		}
+	}
+
+	DC_FlushAll();
+	fwrite(temp, 1, 256*192*3+sizeof(INFOHEADER)+sizeof(HEADER), file);
+	fclose(file);
+	free(temp);
+}*/
 // simple sprite struct
 typedef struct
 {
@@ -71,7 +125,7 @@ int main(void)
 				 DISPLAY_SPR_1D		  // this is used when in tile mode
 	);
 	vramSetBankA(VRAM_A_MAIN_BG_0x06040000);
-	//vramSetBankC(VRAM_C_LCD);
+	
 	// set bits 18 and 19 of DISPCNT register to 11
 	//REG_DISPCNT |= (3 << 18);
 	
