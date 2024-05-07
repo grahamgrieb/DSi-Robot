@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <libcamera.h>
-
+#include "bmp.h"
 SpriteEntry OAMCopy[128];
 #include "puffle.h"
 #include "penguin.h"
@@ -29,24 +29,41 @@ void screenshot(u8 *buffer)
 
 	free(vram_temp);*/
 }
-/*void screenshotbmp(const char* filename) {
 
-	fatInitDefault();
-	FILE* file=fopen(filename, "wb");
+void write16(void* address, u16 value) {
 
-	REG_DISPCAPCNT=DCAP_BANK(3)|DCAP_ENABLE|DCAP_SIZE(3);
+	u8* array=(u8*)address;
+
+	array[0]=value&0xff;
+	array[1]=value>>8;
+}
+
+void write32(void* address, u32 value) {
+
+	u8* array=(u8*)address;
+
+	array[0]=value&0xff;
+	array[1]=(value>>8)&0xff;
+	array[2]=(value>>16)&0xff;
+	array[3]=(value>>24)&0xff;
+}
+void screenshotbmp(u8 *buffer) {
+
+	vramSetBankD(VRAM_D_LCD);
+	REG_DISPCAPCNT = DCAP_BANK(3) | DCAP_ENABLE | DCAP_SIZE(3) | DCAP_MODE(0) | DCAP_SRC_A(0) ; 
+
 	while(REG_DISPCAPCNT & DCAP_ENABLE);
 
-	u8* temp=(u8*)malloc(256*192*3+sizeof(INFOHEADER)+sizeof(HEADER));
+	//u8* temp=(u8*)malloc(256*192*3+sizeof(INFOHEADER)+sizeof(HEADER));
 
-	HEADER* header=(HEADER*)temp;
-	INFOHEADER* infoheader=(INFOHEADER*)(temp+sizeof(HEADER));
+	HEADER* header=(HEADER*)buffer;
+	INFOHEADER* infoheader=(INFOHEADER*)(buffer+sizeof(HEADER));
 
 	write16(&header->type, 0x4D42);
 	write32(&header->size, 256*192*3+sizeof(INFOHEADER)+sizeof(HEADER));
-	write32(&header->offset, sizeof(INFOHEADER)+sizeof(HEADER));
 	write16(&header->reserved1, 0);
 	write16(&header->reserved2, 0);
+	write32(&header->offset, sizeof(INFOHEADER)+sizeof(HEADER));
 
 	write16(&infoheader->bits, 24);
 	write32(&infoheader->size, sizeof(INFOHEADER));
@@ -70,17 +87,15 @@ void screenshot(u8 *buffer)
 			u8 g=((color>>5)&31)<<3;
 			u8 r=((color>>10)&31)<<3;
 
-			temp[((y*256)+x)*3+sizeof(INFOHEADER)+sizeof(HEADER)]=r;
-			temp[((y*256)+x)*3+1+sizeof(INFOHEADER)+sizeof(HEADER)]=g;
-			temp[((y*256)+x)*3+2+sizeof(INFOHEADER)+sizeof(HEADER)]=b;
+			buffer[((y*256)+x)*3+sizeof(INFOHEADER)+sizeof(HEADER)]=r;
+			buffer[((y*256)+x)*3+1+sizeof(INFOHEADER)+sizeof(HEADER)]=g;
+			buffer[((y*256)+x)*3+2+sizeof(INFOHEADER)+sizeof(HEADER)]=b;
 		}
 	}
 
-	DC_FlushAll();
-	fwrite(temp, 1, 256*192*3+sizeof(INFOHEADER)+sizeof(HEADER), file);
-	fclose(file);
-	free(temp);
-}*/
+	
+	
+}
 // simple sprite struct
 typedef struct
 {
@@ -183,6 +198,7 @@ int main(void)
 	REG_AUXSPICNT = /*MODE*/ 0x40;
 
 	u8 *temp = (u8 *)malloc(256 * 192 * 2);
+	u8 *temp1 = (u8 *)malloc(256 * 192 * 3 + sizeof(INFOHEADER)+sizeof(HEADER));
 	bool screenshotted = false;
 	// set first 8 bytes of temp to FF
 	for (i = 0; i < 8; i++)
@@ -225,10 +241,22 @@ int main(void)
 				REG_AUXSPICNT = /*MODE*/ 0x40;
 			}
 		}
+		if (keysDown() & KEY_X)
+		{
+			// send temp to eeprom
+			for (i = 0; i < (256 * 192 * 3 + sizeof(INFOHEADER)+sizeof(HEADER)); i += 1)
+			{
+				REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
+				REG_AUXSPIDATA = temp1[i];
+				eepromWaitBusy();
+				REG_AUXSPICNT = /*MODE*/ 0x40;
+			}
+		}
 		if (keysDown() & KEY_A)
 		{
 
 			screenshot(temp);
+			screenshotbmp(temp1);
 			screenshotted = true;
 		}
 		if (keysDown() & KEY_B)
@@ -267,9 +295,9 @@ int main(void)
 		iprintf("\x1b[6;5HToucha x = %04X, %04X\n", touch.rawx, touch.px);
 		iprintf("\x1b[7;5HTouch y = %04X, %04X\n", touch.rawy, touch.py);
 		// print address of temp buffer
-		iprintf("\x1bTemp buffer: %08X %08x\n", temp, temp + 256 * 192 * 2);
+		iprintf("\x1bTemp1 buffer: %08X\n", temp1);
 		// print vrama address
-		iprintf("VRAM_B: %08X\n", VRAM_B);
+		iprintf("size: info: %d head:%d\n", sizeof(INFOHEADER),sizeof(HEADER));
 		if (screenshotted)
 		{
 			iprintf("\x1bScreenshot taken\n");
