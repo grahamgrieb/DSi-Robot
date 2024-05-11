@@ -60,6 +60,7 @@ arm9.o: C:/Users/sxysm/Documents/ee327/ds-app/arm9/source/arm9.cpp \
  C:/devkitPro/libnds/include/nds/arm9/videoGL.h \
  C:/devkitPro/libnds/include/nds/arm9/nand.h \
  C:\devkitPro\libcamera/include/libcamera.h \
+ C:/Users/sxysm/Documents/ee327/ds-app/arm9/include/bmp.h \
  C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/puffle.h \
  C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/penguin.h \
  C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/rose.h \
@@ -126,6 +127,7 @@ C:/devkitPro/libnds/include/nds/arm9/video.h:
 C:/devkitPro/libnds/include/nds/arm9/videoGL.h:
 C:/devkitPro/libnds/include/nds/arm9/nand.h:
 C:\devkitPro\libcamera/include/libcamera.h:
+C:/Users/sxysm/Documents/ee327/ds-app/arm9/include/bmp.h:
 C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/puffle.h:
 C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/penguin.h:
 C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/rose.h:
