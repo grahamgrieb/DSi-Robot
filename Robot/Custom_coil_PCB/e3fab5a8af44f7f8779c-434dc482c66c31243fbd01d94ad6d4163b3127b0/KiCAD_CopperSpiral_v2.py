@@ -148,11 +148,11 @@ if __name__ == '__main__':
 
     Center = [127.0,101.6] # x/y coordinates of the centre of the pcb sheet
     Radius = 0.5 # start radius in mm
-    Sides = 40.0
+    Sides = 32.0
     StartAngle = 0.0 # degrees
     TrackWidth = 0.6
     TrackDistance = 0.727
-    Turns = 40
+    Turns = 35
     Spin = 1 # ccw = +1, cw = -1
     Layer = "bcu"
     Net = "1"
