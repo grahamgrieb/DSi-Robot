@@ -29,7 +29,7 @@
 // Connect MISO to UNO Digital #12 (Hardware SPI MISO)
 // Connect MOSI to UNO Digital #11 (Hardware SPI MOSI)
 #define RA8875_INT 25
-#define RA8875_CS 27
+#define RA8875_CS 5
 #define RA8875_RESET 26
 Adafruit_RA8875 tft = Adafruit_RA8875(RA8875_CS, RA8875_RESET);
 
@@ -76,7 +76,7 @@ void loop()
 // makes loading a little faster.  20 pixels seems a
 // good balance.
 
-#define BUFFPIXEL 20
+#define BUFFPIXEL 40
 
 void bmpDraw(const char *filename, int x, int y) {
   File     bmpFile;

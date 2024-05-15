@@ -225,9 +225,7 @@ int main(void)
 		scanKeys();
 		if (keysDown() & KEY_SELECT)
 		{
-			REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40| 0x3;
-			REG_AUXSPIDATA = 0x43;
-			eepromWaitBusy();
+			
 			REG_AUXSPICNT = /*MODE*/ 0x40;
 		}
 		if (keysDown() & KEY_UP)
@@ -235,7 +233,7 @@ int main(void)
 			REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
 			REG_AUXSPIDATA = 0x02;
 			eepromWaitBusy();
-			REG_AUXSPICNT = /*MODE*/ 0x40;
+			//REG_AUXSPICNT = /*MODE*/ 0x40;
 		}
 		if (keysDown() & KEY_DOWN)
 		{
@@ -253,11 +251,12 @@ int main(void)
 			// send temp to eeprom
 			for (i = 0; i < (256 * 192 * 3 + sizeof(INFOHEADER)+sizeof(HEADER)); i += 1)
 			{
-				REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40 | 0x3 ;
+				REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
 				REG_AUXSPIDATA = temp1[i];
 				eepromWaitBusy();
-				REG_AUXSPICNT = /*MODE*/ 0x40;
+				
 			}
+			REG_AUXSPICNT = /*MODE*/ 0x40;
 		}
 		if (keysDown() & KEY_A)
 		{
