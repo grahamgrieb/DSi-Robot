@@ -1,27 +1,9 @@
-/******************************************************************
- This is an example for the Adafruit RA8875 Driver board for TFT displays
- ---------------> http://www.adafruit.com/products/1590
- The RA8875 is a TFT driver for up to 800x480 dotclock'd displays
- It is tested to work with displays in the Adafruit shop. Other displays
- may need timing adjustments and are not guanteed to work.
-
- Adafruit invests time and resources providing this open
- source code, please support Adafruit and open-source hardware
- by purchasing products from Adafruit!
-
- Written by Limor Fried/Ladyada for Adafruit Industries.
- BSD license, check license.txt for more information.
- All text above must be included in any redistribution.
- ******************************************************************/
-
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <SPI.h>
 #include <Wire.h>
 #include "Adafruit_RA8875.h"
 #include <Adafruit_STMPE610.h>
 #include <SPIFFS.h> // Add this line to include the SPIFFS library
-
-#define sd_cs 6                          // uding ethernet shield sd
 
 
 // Library only supports hardware SPI at this time
