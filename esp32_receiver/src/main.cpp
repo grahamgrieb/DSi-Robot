@@ -29,7 +29,8 @@ uint8_t *fb;
 
 void onDataReady(uint32_t len) {
   Serial.printf("Received %d bytes\n", len);
-
+  //print first two bytes
+  Serial.printf("First two bytes: %02X %02X\n", fb[0], fb[1]);
   
 }
 
@@ -69,7 +70,7 @@ void setup () {
 
   delay(2000);
 
-  fb = (uint8_t*)  malloc(110000* sizeof( uint8_t ) ) ;
+  fb = (uint8_t*)  malloc(98358* sizeof( uint8_t ) ) ;
 
   radio.setRecvBuffer(fb);
   radio.setRecvCallback(onDataReady);

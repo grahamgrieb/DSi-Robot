@@ -58,7 +58,7 @@ void loop()
 // makes loading a little faster.  20 pixels seems a
 // good balance.
 
-#define BUFFPIXEL 40
+#define BUFFPIXEL 500
 
 void bmpDraw(const char *filename, int x, int y) {
   File     bmpFile;
@@ -68,13 +68,13 @@ void bmpDraw(const char *filename, int x, int y) {
   uint32_t rowSize;               // Not always = bmpWidth; may have padding
   uint8_t  sdbuffer[3*BUFFPIXEL]; // pixel in buffer (R+G+B per pixel)
   uint16_t lcdbuffer[BUFFPIXEL];  // pixel out buffer (16-bit per pixel)
-  uint8_t  buffidx = sizeof(sdbuffer); // Current position in sdbuffer
+  uint16_t  buffidx = sizeof(sdbuffer); // Current position in sdbuffer
   boolean  goodBmp = false;       // Set to true on valid header parse
   boolean  flip    = true;        // BMP is stored bottom-to-top
   int      w, h, row, col, xpos, ypos;
   uint8_t  r, g, b;
   uint32_t pos = 0, startTime = millis();
-  uint8_t  lcdidx = 0;
+  uint16_t  lcdidx = 0;
 
   if((x >= tft.width()) || (y >= tft.height())) return;
 
@@ -202,7 +202,8 @@ void bmpDraw(const char *filename, int x, int y) {
 void setup () {
   
   Serial.begin(9600);
-
+  
+  
   if (!SPIFFS.begin(true)) {
     Serial.println("An Error has occurred while mounting SPIFFS");
   }

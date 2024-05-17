@@ -163,7 +163,7 @@ boolean Adafruit_RA8875::begin(enum RA8875sizes s) {
   /// @endcond
   spi_speed = 12000000L;
 #else
-  spi_speed = 4000000L;
+  spi_speed = 20000000L;
 #endif
 #else
 #ifdef __AVR__

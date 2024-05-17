@@ -54,24 +54,22 @@ void screenshotbmp(u8 *buffer) {
 
 	while(REG_DISPCAPCNT & DCAP_ENABLE);
 
-	//u8* temp=(u8*)malloc(256*192*3+sizeof(INFOHEADER)+sizeof(HEADER));
-
 	HEADER* header=(HEADER*)buffer;
 	INFOHEADER* infoheader=(INFOHEADER*)(buffer+sizeof(HEADER));
 
 	write16(&header->type, 0x4D42);
-	write32(&header->size, 256*192*3+sizeof(INFOHEADER)+sizeof(HEADER));
+	write32(&header->size, 256*192*2+sizeof(INFOHEADER)+sizeof(HEADER));
 	write16(&header->reserved1, 0);
 	write16(&header->reserved2, 0);
 	write32(&header->offset, sizeof(INFOHEADER)+sizeof(HEADER));
 
-	write16(&infoheader->bits, 24);
+	write16(&infoheader->bits, 16);
 	write32(&infoheader->size, sizeof(INFOHEADER));
 	write32(&infoheader->compression, 0);
 	write32(&infoheader->width, 256);
 	write32(&infoheader->height, 192);
 	write16(&infoheader->planes, 1);
-	write32(&infoheader->imagesize, 256*192*3);
+	write32(&infoheader->imagesize, 256*192*2);
 	write32(&infoheader->xresolution, 0);
 	write32(&infoheader->yresolution, 0);
 	write32(&infoheader->importantcolours, 0);
@@ -83,18 +81,10 @@ void screenshotbmp(u8 *buffer) {
 		{
 			u16 color=VRAM_D[256*192-y*256+x];
 
-			u8 b=(color&31)<<3;
-			u8 g=((color>>5)&31)<<3;
-			u8 r=((color>>10)&31)<<3;
-
-			buffer[((y*256)+x)*3+sizeof(INFOHEADER)+sizeof(HEADER)]=r;
-			buffer[((y*256)+x)*3+1+sizeof(INFOHEADER)+sizeof(HEADER)]=g;
-			buffer[((y*256)+x)*3+2+sizeof(INFOHEADER)+sizeof(HEADER)]=b;
+			buffer[((y*256)+x)*2+sizeof(INFOHEADER)+sizeof(HEADER)]=color&0xFF;
+			buffer[((y*256)+x)*2+1+sizeof(INFOHEADER)+sizeof(HEADER)]=(color>>8)&0xFF;
 		}
 	}
-
-	
-	
 }
 // simple sprite struct
 typedef struct
@@ -198,7 +188,7 @@ int main(void)
 	REG_AUXSPICNT = /*MODE*/ 0x40;
 
 	u8 *temp = (u8 *)malloc(256 * 192 * 2);
-	u8 *temp1 = (u8 *)malloc(256 * 192 * 3 + sizeof(INFOHEADER)+sizeof(HEADER));
+	u8 *temp1 = (u8 *)malloc(256 * 192 * 2 + sizeof(INFOHEADER)+sizeof(HEADER));
 	bool screenshotted = false;
 	// set first 8 bytes of temp to FF
 	for (i = 0; i < 8; i++)
@@ -249,7 +239,7 @@ int main(void)
 		if (keysDown() & KEY_X)
 		{
 			// send temp to eeprom
-			for (i = 0; i < (256 * 192 * 3 + sizeof(INFOHEADER)+sizeof(HEADER)); i += 1)
+			for (i = 0; i < (256 * 192 * 2 + sizeof(INFOHEADER)+sizeof(HEADER)); i += 1)
 			{
 				REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
 				REG_AUXSPIDATA = temp1[i];

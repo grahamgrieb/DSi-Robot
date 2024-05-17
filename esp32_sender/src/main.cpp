@@ -21,10 +21,12 @@
 #include <SPIFFS.h>
 #include <WiFi.h>
 #include <ESPNowCam.h>
+
 static uint8_t receiver[] = { 0x8C, 0xCE, 0x4E, 0x8C, 0xB6, 0x88 };
 ESPNowCam radio;
-#define send_size 110000
+#define send_size 98358
 uint8_t* fb = (uint8_t*)  malloc(send_size) ;
+
 
 
 
@@ -60,22 +62,23 @@ void loop()
   //quickEspNow.send (DEST_ADDR, (uint8_t*)message.c_str (), message.length ());
   //send 200KB of data
   //send test.bmp over espnow
-  File file = SPIFFS.open("/ds.bmp", FILE_READ);
+  
+  
+  File file = SPIFFS.open("/ds16.bmp", FILE_READ);
   if (!file) {
     Serial.println("There was an error opening the file for reading");
     return;
   }
-  //print file size
-  Serial.println(file.size());
+
   
-  //file.read(fb, file.size());
-  
-  radio.sendData(fb,send_size);
+  file.read(fb, send_size);
+  file.close();
+  Serial.println(radio.sendData(fb,send_size));
   //send hello world
   //radio.sendData((uint8_t*)"Hello, world!", 13);
   delay (1000);
 
-  
+ 
    
 
 }
