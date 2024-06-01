@@ -2,51 +2,31 @@
 #include <stdio.h>
 #include <string.h>
 #include <libcamera.h>
-#include "bmp.h"
+
 SpriteEntry OAMCopy[128];
 #include "puffle.h"
 #include "penguin.h"
 #include "rose.h"
 #include "dandelion.h"
 #include "ball.h"
-
-void screenshot(u8 *buffer)
+union
 {
-	/*u8 vram_cr_temp=VRAM_C_CR;
-	VRAM_C_CR=VRAM_C_LCD;
-	u8* vram_temp=(u8*)malloc(128*1024);
-	dmaCopy(VRAM_B, vram_temp, 128*1024);*/
-	//VRAM_C_CR=VRAM_C_LCD|VRAM_ENABLE;
+    u16 integer;
+    unsigned char byte[4];
+} rgb565;
+
+void startScreenshot(u8* buffer)
+{
 	vramSetBankD(VRAM_D_LCD);
 	REG_DISPCAPCNT = DCAP_BANK(3) | DCAP_ENABLE | DCAP_SIZE(3) | DCAP_MODE(0) | DCAP_SRC_A(0) ; //|DCAP_SRC_B(1);
-	while (REG_DISPCAPCNT & DCAP_ENABLE);
-	dmaCopy(VRAM_D, buffer, 256 * 192 * 2);
 	
-	//VRAM_C_CR=0x00;
-	/*dmaCopy(vram_temp, VRAM_B, 128*1024);
-
-	VRAM_B_CR=vram_cr_temp;
-
-	free(vram_temp);*/
+	dmaCopy(VRAM_D, buffer, 256 * 192 * 2);
+}
+bool screenshotDone(){
+	return !(REG_DISPCAPCNT & DCAP_ENABLE);	
 }
 
-void write16(void* address, u16 value) {
 
-	u8* array=(u8*)address;
-
-	array[0]=value&0xff;
-	array[1]=value>>8;
-}
-
-void write32(void* address, u32 value) {
-
-	u8* array=(u8*)address;
-
-	array[0]=value&0xff;
-	array[1]=(value>>8)&0xff;
-	array[2]=(value>>16)&0xff;
-	array[3]=(value>>24)&0xff;
-}
 void screenshotbmp(u8 *buffer) {
 
 	vramSetBankD(VRAM_D_LCD);
@@ -54,35 +34,19 @@ void screenshotbmp(u8 *buffer) {
 
 	while(REG_DISPCAPCNT & DCAP_ENABLE);
 
-	HEADER* header=(HEADER*)buffer;
-	INFOHEADER* infoheader=(INFOHEADER*)(buffer+sizeof(HEADER));
-
-	write16(&header->type, 0x4D42);
-	write32(&header->size, 256*192*2+sizeof(INFOHEADER)+sizeof(HEADER));
-	write16(&header->reserved1, 0);
-	write16(&header->reserved2, 0);
-	write32(&header->offset, sizeof(INFOHEADER)+sizeof(HEADER));
-
-	write16(&infoheader->bits, 16);
-	write32(&infoheader->size, sizeof(INFOHEADER));
-	write32(&infoheader->compression, 0);
-	write32(&infoheader->width, 256);
-	write32(&infoheader->height, 192);
-	write16(&infoheader->planes, 1);
-	write32(&infoheader->imagesize, 256*192*2);
-	write32(&infoheader->xresolution, 0);
-	write32(&infoheader->yresolution, 0);
-	write32(&infoheader->importantcolours, 0);
-	write32(&infoheader->ncolours, 0);
-
 	for(int y=0;y<192;y++)
 	{
 		for(int x=0;x<256;x++)
 		{
-			u16 color=VRAM_D[256*192-y*256+x];
+			u16 color=VRAM_D[y*256+x];
 
-			buffer[((y*256)+x)*2+sizeof(INFOHEADER)+sizeof(HEADER)]=color&0xFF;
-			buffer[((y*256)+x)*2+1+sizeof(INFOHEADER)+sizeof(HEADER)]=(color>>8)&0xFF;
+			u8 b=(color&31)<<3; 
+			u8 g=((color>>5)&31)<<3; 
+			u8 r=((color>>10)&31)<<3;
+
+			buffer[((y*256)+x)*3]=r;
+			buffer[((y*256)+x)*3+1]=g;
+			buffer[((y*256)+x)*3+2]=b;
 		}
 	}
 }
@@ -177,10 +141,8 @@ int main(void)
 	dmaCopy(ballTiles, ball, ballTilesLen);
 
 	sysSetBusOwners(true, true); // give ARM9 access to the cart
-	u8 *card = (u8 *)CARD_CMD_DUMMY;
+	
 	enableSlot1();
-	static u8 header1[512];
-	bool swap = false;
 
 	REG_AUXSPICNT = /*E*/ 0x8000 | /*SEL*/ 0x2000 | /*MODE*/ 0x40;
 	REG_AUXSPIDATA = 0xFF;
@@ -188,13 +150,11 @@ int main(void)
 	REG_AUXSPICNT = /*MODE*/ 0x40;
 
 	u8 *temp = (u8 *)malloc(256 * 192 * 2);
-	u8 *temp1 = (u8 *)malloc(256 * 192 * 2 + sizeof(INFOHEADER)+sizeof(HEADER));
 	bool screenshotted = false;
-	// set first 8 bytes of temp to FF
-	for (i = 0; i < 8; i++)
-	{
-		temp[i] = 0xFF;
-	}
+	bool firstrun = true;
+	
+	
+	
 
 	while (1)
 	{
@@ -208,61 +168,92 @@ int main(void)
 		oamUpdate(&oamMain);
 		// fetch a frame and write it to the active background, displaying it to the screen
 		camFetch(bgmem);
-
-		// updateOAM();
+		/*
+		//auto screenshot and SPI send code
+		if(firstrun){
+			firstrun=false;
+			startScreenshot();
+			screenshotted=true;
+		}
+		//check if SPI sent
+		if(fifoCheckValue32(FIFO_USER_02)){
+			int value = fifoGetValue32(FIFO_USER_02);
+			//print value
+			iprintf("\x1b FIFO2 = %04X\n", value);
+			//12 means SPI was sent
+			if(value==12){
+				startScreenshot();
+				screenshotted=true;
+			}
+		}
+		//if Capture Unit is done putting capture data into VRAM D
+		if(screenshotted){
+			if(screenshotDone()){
+				//tell ARM7 CPU to start sending data from VRAM D (Capture Data) over SPI
+				sysSetBusOwners(false, false); // give ARM7 access to the cart
+				vramSetBankD(VRAM_D_ARM7_0x06000000);
+				screenshotted=false;
+			}
+		}
+		//end screenshot and SPI send code
+		*/
 
 		touchRead(&touch);
 		scanKeys();
 		if (keysDown() & KEY_SELECT)
 		{
 			
-			REG_AUXSPICNT = /*MODE*/ 0x40;
 		}
 		if (keysDown() & KEY_UP)
 		{
-			REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
-			REG_AUXSPIDATA = 0x02;
-			eepromWaitBusy();
-			//REG_AUXSPICNT = /*MODE*/ 0x40;
+			startScreenshot(temp);
+			while (!screenshotDone())
+			{
+				
+			}
+			//tell ARM7 CPU to start sending data from VRAM D (Capture Data) over SPI
+			sysSetBusOwners(false, false); // give ARM7 access to the cart
+			vramSetBankD(VRAM_D_ARM7_0x06000000);
+			
 		}
 		if (keysDown() & KEY_DOWN)
-		{
-			// send temp to eeprom
-			for (i = 0; i < 256 * 192 * 2; i += 1)
-			{
-				REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
-				REG_AUXSPIDATA = temp[i];
+		{	
+			
+			REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
+			for(int i=0;i<32767;i+=1){
+				
+				REG_AUXSPIDATA = i%0xFF;
 				eepromWaitBusy();
-				REG_AUXSPICNT = /*MODE*/ 0x40;
 			}
+			REG_AUXSPICNT = /*MODE*/ 0x40 ;
+			//wait 1ms
+			swiDelay(8380);
+			REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
+			for(int i=0;i<32763;i+=1){
+				
+				REG_AUXSPIDATA = 0xDE;
+				eepromWaitBusy();
+			}		
+			REG_AUXSPICNT = /*MODE*/ 0x40 ;
+			
+				
+
 		}
 		if (keysDown() & KEY_X)
 		{
-			// send temp to eeprom
-			for (i = 0; i < (256 * 192 * 2 + sizeof(INFOHEADER)+sizeof(HEADER)); i += 1)
-			{
-				REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
-				REG_AUXSPIDATA = temp1[i];
-				eepromWaitBusy();
-				
-			}
-			REG_AUXSPICNT = /*MODE*/ 0x40;
+			vramSetBankD(VRAM_D_LCD);
 		}
 		if (keysDown() & KEY_A)
 		{
 
-			screenshot(temp);
-			screenshotbmp(temp1);
-			screenshotted = true;
 		}
 		if (keysDown() & KEY_B)
 		{ // switch cameras whenever the B button is pressed
 			camSwitch();
 		}
 		if (keysDown() & KEY_START)
-		{ // deactivate the camera and terminate the program whenever START is pressed
-			camStop();
-			break;
+		{ 
+			
 		}
 		// change sticker mode
 		if (keysDown() & KEY_RIGHT)
@@ -290,10 +281,7 @@ int main(void)
 		// Debug info on bottom screen
 		iprintf("\x1b[6;5HToucha x = %04X, %04X\n", touch.rawx, touch.px);
 		iprintf("\x1b[7;5HTouch y = %04X, %04X\n", touch.rawy, touch.py);
-		// print address of temp buffer
-		iprintf("\x1bTemp1 buffer: %08X\n", temp1);
-		// print vrama address
-		iprintf("size: info: %d head:%d\n", sizeof(INFOHEADER),sizeof(HEADER));
+		
 		if (screenshotted)
 		{
 			iprintf("\x1bScreenshot taken\n");
