@@ -152,151 +152,6 @@
 				)
 			)
 		)
-		(symbol "Ilya_Teach:CONN_DEBUGA"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" ""
-				(at -5.08 5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left bottom)
-					(hide yes)
-				)
-			)
-			(property "Value" ""
-				(at -5.08 -5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left bottom)
-				)
-			)
-			(property "Footprint" "Ilya_Teach:1X2_SMALL_TH"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_locked" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "CONN_DEBUGA_1_0"
-				(polyline
-					(pts
-						(xy -5.08 -2.54) (xy -5.08 2.54)
-					)
-					(stroke
-						(width 0.254)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -5.08 2.54) (xy 5.08 2.54)
-					)
-					(stroke
-						(width 0.254)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 5.08 -2.54) (xy -5.08 -2.54)
-					)
-					(stroke
-						(width 0.254)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 5.08 2.54) (xy 5.08 -2.54)
-					)
-					(stroke
-						(width 0.254)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(pin bidirectional line
-					(at -7.62 0 0)
-					(length 2.54)
-					(name "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin bidirectional line
-					(at 7.62 0 180)
-					(length 2.54)
-					(name "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "Ilya_Teach:LED0603"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -1650,6 +1505,234 @@
 				)
 			)
 		)
+		(symbol "SparkFun-Connectors:CONN_04PTH"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at -5.08 8.128 0)
+				(effects
+					(font
+						(size 1.778 1.778)
+					)
+					(justify left bottom)
+				)
+			)
+			(property "Value" ""
+				(at -5.08 -7.366 0)
+				(effects
+					(font
+						(size 1.778 1.778)
+					)
+					(justify left bottom)
+				)
+			)
+			(property "Footprint" "SparkFun-Connectors:1X04"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Multi connection point. Often used as Generic Header-pin footprint for 0.1 inch spaced/style header connections\n\nOn any of the 0.1 inch spaced packages, you can populate with these:\n\n• https://www.sparkfun.com/products/116  Break Away Headers - Straight (PRT-00116)\n• https://www.sparkfun.com/products/553  Break Away Male Headers - Right Angle (PRT-00553)\n• https://www.sparkfun.com/products/115  Female Headers (PRT-00115)\n• https://www.sparkfun.com/products/117  Break Away Headers - Machine Pin (PRT-00117)\n• https://www.sparkfun.com/products/743  Break Away Female Headers - Swiss Machine Pin (PRT-00743)\n\nFor SCREWTERMINALS and SPRING TERMINALS visit here:\n\n• https://www.sparkfun.com/search/results?term=Screw+Terminals  Screw Terimnals on SparkFun.com (5mm/3.5mm/2.54mm spacing)\n\nThis device is also useful as a general connection point to wire up your design to another part of your project. Our various solder wires solder well into these plated through hole pads.\n\n• https://www.sparkfun.com/products/11375  Hook-Up Wire - Assortment (Stranded, 22 AWG) (PRT-11375)\n• https://www.sparkfun.com/products/11367  Hook-Up Wire - Assortment (Solid Core, 22 AWG) (PRT-11367)\n• https://www.sparkfun.com/categories/141  View the entire wire category on our website here\n\nSpecial notes:\n\nMolex polarized connector foot print use with SKU : PRT-08231 with associated crimp pins and housings. 1MM SMD Version SKU: PRT-10208"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_locked" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "CONN_04PTH_1_0"
+				(polyline
+					(pts
+						(xy -5.08 7.62) (xy -5.08 -5.08)
+					)
+					(stroke
+						(width 0.4064)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -5.08 7.62) (xy 1.27 7.62)
+					)
+					(stroke
+						(width 0.4064)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.27 -2.54) (xy 0 -2.54)
+					)
+					(stroke
+						(width 0.6096)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.27 0) (xy 0 0)
+					)
+					(stroke
+						(width 0.6096)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.27 2.54) (xy 0 2.54)
+					)
+					(stroke
+						(width 0.6096)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.27 5.08) (xy 0 5.08)
+					)
+					(stroke
+						(width 0.6096)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 -5.08) (xy -5.08 -5.08)
+					)
+					(stroke
+						(width 0.4064)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 -5.08) (xy 1.27 7.62)
+					)
+					(stroke
+						(width 0.4064)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at 5.08 -2.54 180)
+					(length 5.08)
+					(name "1"
+						(effects
+							(font
+								(size 0 0)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 0 180)
+					(length 5.08)
+					(name "2"
+						(effects
+							(font
+								(size 0 0)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 2.54 180)
+					(length 5.08)
+					(name "3"
+						(effects
+							(font
+								(size 0 0)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 5.08 180)
+					(length 5.08)
+					(name "4"
+						(effects
+							(font
+								(size 0 0)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "ndsbreakoutboard-rescue:ndsPADS-Connector"
 			(pin_names
 				(offset 1.016)
@@ -2061,16 +2144,6 @@
 	)
 	(wire
 		(pts
-			(xy 76.2 77.47) (xy 80.01 77.47)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0c4b0869-97ad-4242-89d3-81da47ef78c6")
-	)
-	(wire
-		(pts
 			(xy 171.45 43.18) (xy 171.45 83.82)
 		)
 		(stroke
@@ -2131,16 +2204,6 @@
 	)
 	(wire
 		(pts
-			(xy 93.98 71.12) (xy 99.06 71.12)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2647f2bf-2d62-4929-953a-befc980b49fc")
-	)
-	(wire
-		(pts
 			(xy 181.61 116.84) (xy 166.37 116.84)
 		)
 		(stroke
@@ -2151,7 +2214,7 @@
 	)
 	(wire
 		(pts
-			(xy 161.29 49.53) (xy 161.29 67.31)
+			(xy 161.29 45.72) (xy 161.29 67.31)
 		)
 		(stroke
 			(width 0)
@@ -2191,6 +2254,16 @@
 	)
 	(wire
 		(pts
+			(xy 161.29 176.53) (xy 165.1 176.53)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4a5a5e43-79fb-4d3b-9fef-587f6290b7af")
+	)
+	(wire
+		(pts
 			(xy 207.01 116.84) (xy 214.63 116.84)
 		)
 		(stroke
@@ -2208,16 +2281,6 @@
 			(type default)
 		)
 		(uuid "4d99b3fe-d8ed-4706-8fad-23c218b29276")
-	)
-	(wire
-		(pts
-			(xy 95.25 77.47) (xy 99.06 77.47)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "50c5bd70-fcc9-43e2-8daf-b842f0b9d4be")
 	)
 	(wire
 		(pts
@@ -2281,6 +2344,16 @@
 	)
 	(wire
 		(pts
+			(xy 85.09 50.8) (xy 87.63 50.8)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5d4dc21d-c555-4552-b3bb-bbca2a916f2b")
+	)
+	(wire
+		(pts
 			(xy 115.57 186.69) (xy 115.57 190.5)
 		)
 		(stroke
@@ -2298,16 +2371,6 @@
 			(type default)
 		)
 		(uuid "6cc75274-d683-4450-b188-7e6ac5d7ac4c")
-	)
-	(wire
-		(pts
-			(xy 73.66 71.12) (xy 78.74 71.12)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6fd6e08f-57c4-49a5-8a46-ede925af3d98")
 	)
 	(wire
 		(pts
@@ -2361,6 +2424,16 @@
 	)
 	(wire
 		(pts
+			(xy 161.29 128.27) (xy 165.1 128.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7db0e8e2-5574-410e-8db6-7d0fd64358e7")
+	)
+	(wire
+		(pts
 			(xy 156.21 49.53) (xy 156.21 67.31)
 		)
 		(stroke
@@ -2368,6 +2441,16 @@
 			(type default)
 		)
 		(uuid "901f5770-0e05-4ccf-9ceb-4fba7f7a2352")
+	)
+	(wire
+		(pts
+			(xy 85.09 45.72) (xy 87.63 45.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9047f03b-97a1-4aa1-bd4a-74def2950476")
 	)
 	(wire
 		(pts
@@ -2411,6 +2494,16 @@
 	)
 	(wire
 		(pts
+			(xy 138.43 41.91) (xy 138.43 67.31)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ae64832c-0ea3-42d1-acaf-c659fe05d94e")
+	)
+	(wire
+		(pts
 			(xy 59.69 67.31) (xy 59.69 69.85)
 		)
 		(stroke
@@ -2431,6 +2524,16 @@
 	)
 	(wire
 		(pts
+			(xy 85.09 48.26) (xy 87.63 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b415f46c-2c3e-4dbe-80f7-39dab917f5e5")
+	)
+	(wire
+		(pts
 			(xy 59.69 80.01) (xy 59.69 81.28)
 		)
 		(stroke
@@ -2438,16 +2541,6 @@
 			(type default)
 		)
 		(uuid "bd954c12-4221-4d79-be29-6efd59a3d115")
-	)
-	(wire
-		(pts
-			(xy 138.43 43.18) (xy 138.43 67.31)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c1152238-8b6f-4861-a9c7-d379f07eb5df")
 	)
 	(wire
 		(pts
@@ -2461,6 +2554,16 @@
 	)
 	(wire
 		(pts
+			(xy 85.09 53.34) (xy 87.63 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c7ab0946-d48f-48a0-985b-bc1e7c2c5940")
+	)
+	(wire
+		(pts
 			(xy 161.29 156.21) (xy 167.64 156.21)
 		)
 		(stroke
@@ -2468,6 +2571,16 @@
 			(type default)
 		)
 		(uuid "ce3a31d9-4630-4cb7-bd8c-352514a67121")
+	)
+	(wire
+		(pts
+			(xy 137.16 41.91) (xy 138.43 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cf2a85f7-1250-4b9d-911a-d699cef4b3c2")
 	)
 	(wire
 		(pts
@@ -2559,6 +2672,28 @@
 		)
 		(uuid "fbe39abb-c582-4c58-8282-86d67cdcf0e8")
 	)
+	(label "GND"
+		(at 87.63 50.8 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "054cbeec-220f-415b-b5b0-00c510bd731a")
+	)
+	(label "WIFI_IND"
+		(at 165.1 176.53 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "0f394ebb-af1a-4727-88bb-6918e2037f18")
+	)
 	(label "SPI_MISO"
 		(at 167.64 158.75 0)
 		(fields_autoplaced yes)
@@ -2570,8 +2705,8 @@
 		)
 		(uuid "1a1450e6-ed01-4542-8543-d030b115ef5a")
 	)
-	(label "TXD"
-		(at 73.66 71.12 0)
+	(label "VCC"
+		(at 87.63 53.34 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -2579,7 +2714,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "1ee8550b-416e-4038-91f1-2d25adfd669c")
+		(uuid "29568c38-3b9c-4d4c-a1f0-8cd6f6b85590")
 	)
 	(label "VCC"
 		(at 111.76 59.69 0)
@@ -2603,6 +2738,17 @@
 		)
 		(uuid "368a9c79-92e1-4b94-99fc-4dbee739df8c")
 	)
+	(label "TXD"
+		(at 87.63 45.72 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "36e9d4cf-8137-44c9-8388-10b1bf6b5f7b")
+	)
 	(label "GND"
 		(at 43.18 67.31 0)
 		(fields_autoplaced yes)
@@ -2613,17 +2759,6 @@
 			(justify left bottom)
 		)
 		(uuid "3d2004a6-d852-419f-a035-dfc4be035a5b")
-	)
-	(label "RXD"
-		(at 99.06 71.12 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "41a6e629-3798-46e9-9415-589266055f77")
 	)
 	(label "SPI_MOSI"
 		(at 167.64 153.67 0)
@@ -2646,6 +2781,17 @@
 			(justify left bottom)
 		)
 		(uuid "47c06632-60e0-479e-a207-843d47e772fd")
+	)
+	(label "SPI_CS"
+		(at 137.16 41.91 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "4fd4987d-bed7-4518-a668-9f6123172abe")
 	)
 	(label "VCC"
 		(at 143.51 105.41 0)
@@ -2702,17 +2848,6 @@
 		)
 		(uuid "7b6dd120-3434-4631-bb35-b81c937864f9")
 	)
-	(label "VCC"
-		(at 76.2 77.47 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "8877e717-7dbb-400f-8b64-278936a335e7")
-	)
 	(label "GND"
 		(at 123.19 55.88 0)
 		(fields_autoplaced yes)
@@ -2746,7 +2881,7 @@
 		)
 		(uuid "a3601654-83c7-4172-bf3d-e0234a5ae34b")
 	)
-	(label "GND"
+	(label "WIFI_IND"
 		(at 25.4 67.31 0)
 		(fields_autoplaced yes)
 		(effects
@@ -2768,8 +2903,8 @@
 		)
 		(uuid "b2b60a43-aaac-4013-98c3-edb740f06564")
 	)
-	(label "SPI_CS"
-		(at 138.43 43.18 0)
+	(label "RXD"
+		(at 87.63 48.26 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -2777,7 +2912,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "b864d644-e572-48d5-953c-c9d35bd1647b")
+		(uuid "bb8a18c4-d5c6-44ea-8c90-5f6ee784b4ba")
 	)
 	(label "GND"
 		(at 22.86 110.49 180)
@@ -2823,17 +2958,6 @@
 		)
 		(uuid "d121e460-a838-4baa-ad49-74264dbc54c8")
 	)
-	(label "GND"
-		(at 99.06 77.47 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "da2e34ef-7e4e-4999-9b3f-346bb65acdac")
-	)
 	(label "SPI_CS"
 		(at 59.69 67.31 0)
 		(fields_autoplaced yes)
@@ -2866,6 +2990,17 @@
 			(justify left bottom)
 		)
 		(uuid "f236dab4-f45e-48b1-9bcc-1bbb2b8d603d")
+	)
+	(label "SPI_MISO"
+		(at 161.29 45.72 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "f84f8f9a-dddf-418f-9f42-5e7c268c47b3")
 	)
 	(symbol
 		(lib_id "ndsbreakoutboard-rescue:ndsPADS-Connector")
@@ -2973,7 +3108,7 @@
 			(uuid "ba070836-0a53-493a-8bea-2bddabead121")
 		)
 		(instances
-			(project "ndsbreakoutboard1"
+			(project "dsi_esp"
 				(path "/34dab0cf-8d06-40a7-a34d-4f616657e327"
 					(reference "U1")
 					(unit 1)
@@ -3043,7 +3178,7 @@
 			(uuid "0fe7885e-0004-41a6-b21c-85d584f035d0")
 		)
 		(instances
-			(project "ndsbreakoutboard1"
+			(project "dsi_esp"
 				(path "/34dab0cf-8d06-40a7-a34d-4f616657e327"
 					(reference "C1")
 					(unit 1)
@@ -3114,79 +3249,9 @@
 			(uuid "0aeaca18-cdcc-4027-a8bc-dfdb4c88f63f")
 		)
 		(instances
-			(project "ndsbreakoutboard1"
+			(project "dsi_esp"
 				(path "/34dab0cf-8d06-40a7-a34d-4f616657e327"
 					(reference "RESET1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Ilya_Teach:CONN_DEBUGA")
-		(at 87.63 77.47 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "0e306b92-1292-4669-9d0f-eddb6b84f73b")
-		(property "Reference" "POWER1"
-			(at 82.55 72.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-				(hide yes)
-			)
-		)
-		(property "Value" "~"
-			(at 87.63 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Ilya_Teach:1X2_SMALL_TH"
-			(at 87.63 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 87.63 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 87.63 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "62dd0975-c2f7-4db6-a5fa-499b02a25c13")
-		)
-		(pin "2"
-			(uuid "5c3ecef0-7976-416f-b8d5-b37f5558087b")
-		)
-		(instances
-			(project "ndsbreakoutboard1"
-				(path "/34dab0cf-8d06-40a7-a34d-4f616657e327"
-					(reference "POWER1")
 					(unit 1)
 				)
 			)
@@ -3254,7 +3319,7 @@
 			(uuid "408d2f1d-0dc9-430d-94a9-c8c0a59cfdf1")
 		)
 		(instances
-			(project "ndsbreakoutboard1"
+			(project "dsi_esp"
 				(path "/34dab0cf-8d06-40a7-a34d-4f616657e327"
 					(reference "R2")
 					(unit 1)
@@ -3441,79 +3506,9 @@
 			(uuid "3f344724-0950-41cf-9782-48be5f5f0425")
 		)
 		(instances
-			(project "ndsbreakoutboard1"
+			(project "dsi_esp"
 				(path "/34dab0cf-8d06-40a7-a34d-4f616657e327"
 					(reference "U2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Ilya_Teach:CONN_DEBUGA")
-		(at 86.36 71.12 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "918ad469-f3c7-4c8b-b6eb-8d04e86dafbc")
-		(property "Reference" "PROGRAM1"
-			(at 81.28 66.04 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-				(hide yes)
-			)
-		)
-		(property "Value" "~"
-			(at 86.36 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Ilya_Teach:1X2_SMALL_TH"
-			(at 86.36 71.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 86.36 71.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 86.36 71.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "83852a16-9d7a-4a69-96b8-fe50dd5dcb8c")
-		)
-		(pin "2"
-			(uuid "5e0896b7-af00-47ac-9380-330c7adc3300")
-		)
-		(instances
-			(project "ndsbreakoutboard1"
-				(path "/34dab0cf-8d06-40a7-a34d-4f616657e327"
-					(reference "PROGRAM1")
 					(unit 1)
 				)
 			)
@@ -3581,7 +3576,7 @@
 			(uuid "d5c226b8-5dec-4c21-8663-c80616cb0940")
 		)
 		(instances
-			(project "ndsbreakoutboard1"
+			(project "dsi_esp"
 				(path "/34dab0cf-8d06-40a7-a34d-4f616657e327"
 					(reference "R4")
 					(unit 1)
@@ -3651,7 +3646,7 @@
 			(uuid "1ae3f8c3-74e3-489d-890c-62afe7310d57")
 		)
 		(instances
-			(project "ndsbreakoutboard1"
+			(project "dsi_esp"
 				(path "/34dab0cf-8d06-40a7-a34d-4f616657e327"
 					(reference "SPI1")
 					(unit 1)
@@ -3721,9 +3716,83 @@
 			(uuid "9e8186d5-4ae2-4ebd-bf62-c2be4172eae6")
 		)
 		(instances
-			(project "ndsbreakoutboard1"
+			(project "dsi_esp"
 				(path "/34dab0cf-8d06-40a7-a34d-4f616657e327"
 					(reference "R1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "SparkFun-Connectors:CONN_04PTH")
+		(at 80.01 50.8 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a1aee15c-189d-40ac-a0b5-28629ada4ba7")
+		(property "Reference" "J1"
+			(at 78.105 39.37 0)
+			(effects
+				(font
+					(size 1.778 1.778)
+				)
+			)
+		)
+		(property "Value" "~"
+			(at 78.105 41.91 0)
+			(effects
+				(font
+					(size 1.778 1.778)
+				)
+			)
+		)
+		(property "Footprint" "SparkFun-Connectors:1X04"
+			(at 80.01 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 80.01 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Multi connection point. Often used as Generic Header-pin footprint for 0.1 inch spaced/style header connections\n\nOn any of the 0.1 inch spaced packages, you can populate with these:\n\n• https://www.sparkfun.com/products/116  Break Away Headers - Straight (PRT-00116)\n• https://www.sparkfun.com/products/553  Break Away Male Headers - Right Angle (PRT-00553)\n• https://www.sparkfun.com/products/115  Female Headers (PRT-00115)\n• https://www.sparkfun.com/products/117  Break Away Headers - Machine Pin (PRT-00117)\n• https://www.sparkfun.com/products/743  Break Away Female Headers - Swiss Machine Pin (PRT-00743)\n\nFor SCREWTERMINALS and SPRING TERMINALS visit here:\n\n• https://www.sparkfun.com/search/results?term=Screw+Terminals  Screw Terimnals on SparkFun.com (5mm/3.5mm/2.54mm spacing)\n\nThis device is also useful as a general connection point to wire up your design to another part of your project. Our various solder wires solder well into these plated through hole pads.\n\n• https://www.sparkfun.com/products/11375  Hook-Up Wire - Assortment (Stranded, 22 AWG) (PRT-11375)\n• https://www.sparkfun.com/products/11367  Hook-Up Wire - Assortment (Solid Core, 22 AWG) (PRT-11367)\n• https://www.sparkfun.com/categories/141  View the entire wire category on our website here\n\nSpecial notes:\n\nMolex polarized connector foot print use with SKU : PRT-08231 with associated crimp pins and housings. 1MM SMD Version SKU: PRT-10208"
+			(at 80.01 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "d5851876-c1d0-4457-88db-01f7a686bb72")
+		)
+		(pin "4"
+			(uuid "fa305830-d69a-4021-bedf-c5a5f6547e92")
+		)
+		(pin "1"
+			(uuid "b4c9fb63-f5da-47e0-afd7-688bdbeab0d3")
+		)
+		(pin "3"
+			(uuid "160418ba-52ad-40b6-819a-585d4d55d85e")
+		)
+		(instances
+			(project "dsi_esp"
+				(path "/34dab0cf-8d06-40a7-a34d-4f616657e327"
+					(reference "J1")
 					(unit 1)
 				)
 			)
@@ -3791,7 +3860,7 @@
 			(uuid "a39a6183-89a8-40e3-bd56-4c672ae56ea0")
 		)
 		(instances
-			(project "ndsbreakoutboard1"
+			(project "dsi_esp"
 				(path "/34dab0cf-8d06-40a7-a34d-4f616657e327"
 					(reference "BOOT1")
 					(unit 1)
@@ -3861,7 +3930,7 @@
 			(uuid "c46fc04b-3653-459b-9108-003773c10eb6")
 		)
 		(instances
-			(project "ndsbreakoutboard1"
+			(project "dsi_esp"
 				(path "/34dab0cf-8d06-40a7-a34d-4f616657e327"
 					(reference "POWER2")
 					(unit 1)
@@ -3931,7 +4000,7 @@
 			(uuid "2a53499d-2bb1-4434-af3a-151ed073e15e")
 		)
 		(instances
-			(project "ndsbreakoutboard1"
+			(project "dsi_esp"
 				(path "/34dab0cf-8d06-40a7-a34d-4f616657e327"
 					(reference "WIFI1")
 					(unit 1)
@@ -4001,7 +4070,7 @@
 			(uuid "7c22bcf5-f29b-4428-a24d-4cb6ebce383c")
 		)
 		(instances
-			(project "ndsbreakoutboard1"
+			(project "dsi_esp"
 				(path "/34dab0cf-8d06-40a7-a34d-4f616657e327"
 					(reference "R3")
 					(unit 1)

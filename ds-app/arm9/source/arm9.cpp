@@ -15,12 +15,12 @@ union
     unsigned char byte[4];
 } rgb565;
 
-void startScreenshot(u8* buffer)
+void startScreenshot()
 {
 	vramSetBankD(VRAM_D_LCD);
 	REG_DISPCAPCNT = DCAP_BANK(3) | DCAP_ENABLE | DCAP_SIZE(3) | DCAP_MODE(0) | DCAP_SRC_A(0) ; //|DCAP_SRC_B(1);
 	
-	dmaCopy(VRAM_D, buffer, 256 * 192 * 2);
+	//dmaCopy(VRAM_D, buffer, 256 * 192 * 2);
 }
 bool screenshotDone(){
 	return !(REG_DISPCAPCNT & DCAP_ENABLE);	
@@ -154,7 +154,7 @@ int main(void)
 	bool firstrun = true;
 	
 	
-	
+	int print_count=0;
 
 	while (1)
 	{
@@ -168,7 +168,7 @@ int main(void)
 		oamUpdate(&oamMain);
 		// fetch a frame and write it to the active background, displaying it to the screen
 		camFetch(bgmem);
-		/*
+		
 		//auto screenshot and SPI send code
 		if(firstrun){
 			firstrun=false;
@@ -196,7 +196,7 @@ int main(void)
 			}
 		}
 		//end screenshot and SPI send code
-		*/
+		
 
 		touchRead(&touch);
 		scanKeys();
@@ -206,7 +206,7 @@ int main(void)
 		}
 		if (keysDown() & KEY_UP)
 		{
-			startScreenshot(temp);
+			startScreenshot();
 			while (!screenshotDone())
 			{
 				
@@ -226,12 +226,21 @@ int main(void)
 				eepromWaitBusy();
 			}
 			REG_AUXSPICNT = /*MODE*/ 0x40 ;
-			//wait 1ms
+			//wait .25ms
 			swiDelay(8380);
 			REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
-			for(int i=0;i<32763;i+=1){
+			for(int i=0;i<=32767;i+=1){
 				
 				REG_AUXSPIDATA = 0xDE;
+				eepromWaitBusy();
+			}		
+			REG_AUXSPICNT = /*MODE*/ 0x40 ;
+			//wait .25ms
+			swiDelay(8380);
+			REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
+			for(int i=0;i<=32767;i+=1){
+				
+				REG_AUXSPIDATA = 0xCA;
 				eepromWaitBusy();
 			}		
 			REG_AUXSPICNT = /*MODE*/ 0x40 ;
@@ -293,6 +302,7 @@ int main(void)
 		iprintf("\x1b%d\n", holding);
 		iprintf("\x1bStickers: %d\n", sprite_i);
 		iprintf("\x1bMode: %d\n", mode);
+		
 
 		// let go of sticker
 		if (holding && (touch.rawx == 0 || touch.rawy == 0))

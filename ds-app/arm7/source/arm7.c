@@ -98,16 +98,11 @@ int main() {
 
 				//REG_AUXSPIDATA = 0xFF;
 				//eepromWaitBusy();
+				int i = 0;
 				for(int y=0;y<192;y++){
 					for(int x=0;x<256;x++)
 					{
-						if((x*y)==32768 || (x*y)==65536)
-						{
-							REG_AUXSPICNT = /*MODE*/ 0x40;
-							//wait 1ms
-							swiDelay(8380);
-							REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
-						}
+						
 						u16 color=capture[y*256+x];
 
 						u8 r=(color&31);
@@ -120,8 +115,25 @@ int main() {
 						
 						REG_AUXSPIDATA = rgb565.byte[0];
 						eepromWaitBusy();
+						if(i==32766||i==98300)
+						{
+							fifoSendValue32(FIFO_USER_02, i);
+							REG_AUXSPICNT = /*MODE*/ 0x40;
+							//wait 1ms
+							swiDelay(2095);
+							REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
+						}
 						REG_AUXSPIDATA = rgb565.byte[1];
 						eepromWaitBusy();
+						if(i==65532)
+						{
+							fifoSendValue32(FIFO_USER_02, i);
+							REG_AUXSPICNT = /*MODE*/ 0x40;
+							//wait .25ms
+							swiDelay(2095);
+							REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
+						}
+						i+=2;
 					}
 				}
 				
