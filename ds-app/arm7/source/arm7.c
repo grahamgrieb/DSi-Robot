@@ -33,7 +33,13 @@
 #include <nds/bios.h>
 #include <libcamera.h>
 
+union
+{
+    u16 integer;
+    u8 byte[2];
+} rgb565;
 
+	
 void VblankHandler(void) {
 	Wifi_Update();
 }
@@ -74,13 +80,75 @@ int main() {
 	setPowerButtonCB(powerButtonCB);
 
 	camSetupDefault(FIFO_USER_01); //setup our camera handler to listen on the first FIFO channel
-
+	u16 *capture=VRAM;
+	bool sent_once = false;
 	// Keep the ARM7 mostly idle
 	while (!exitflag) {
 		if ( 0 == (REG_KEYINPUT & (KEY_SELECT | KEY_START | KEY_L | KEY_R))) {
 			exitflag = true;
 		}
 		swiWaitForVBlank();
+				
+		if((*(vu8*)0x4000240)&(1<<1)){
+			if(!sent_once){
+				//VRAM[0]=0x4D42;
+				REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
+				//REG_AUXSPIDATA = 0xFF;
+				//eepromWaitBusy();
+
+				//REG_AUXSPIDATA = 0xFF;
+				//eepromWaitBusy();
+				int i = 0;
+				for(int y=0;y<192;y++){
+					for(int x=0;x<256;x++)
+					{
+						
+						u16 color=capture[y*256+x];
+
+						u8 r=(color&31);
+						u8 g=((color>>5)&31)<<1;
+						u8 b=((color>>10)&31);
+						//convert from RGB555 to RGB565
+						rgb565.integer=(r<<11)|(g<<5)|(b);
+						//rgb565.integer=color;
+						//send in two separate bytes
+						
+						REG_AUXSPIDATA = rgb565.byte[0];
+						eepromWaitBusy();
+						if(i==32766||i==98300)
+						{
+							fifoSendValue32(FIFO_USER_02, i);
+							REG_AUXSPICNT = /*MODE*/ 0x40;
+							//wait 1ms
+							swiDelay(2095);
+							REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
+						}
+						REG_AUXSPIDATA = rgb565.byte[1];
+						eepromWaitBusy();
+						if(i==65532)
+						{
+							fifoSendValue32(FIFO_USER_02, i);
+							REG_AUXSPICNT = /*MODE*/ 0x40;
+							//wait .25ms
+							swiDelay(2095);
+							REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
+						}
+						i+=2;
+					}
+				}
+				
+				REG_AUXSPICNT = /*MODE*/ 0x40;
+				
+				sent_once = true;
+				//send message over fifo, 12 means SPI was sent
+				fifoSendValue32(FIFO_USER_02, 12);
+			}
+		}
+		else{
+			sent_once = false;
+		}
+		
+		
 	}
 	return 0;
 }
