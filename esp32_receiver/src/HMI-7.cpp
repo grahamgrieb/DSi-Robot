@@ -110,18 +110,15 @@ LGFX lcd;
 void onDataReady(uint32_t len) {
   Serial.printf("Received %d bytes\n", len);
   //print first two bytes
-  if(!(receive_buffer[0]!=0xFF && receive_buffer[1]==0xD8)){
+  //Serial.printf("First two bytes: %02X %02X\n", receive_buffer[0], receive_buffer[1]);
+  if(!(receive_buffer[0]==0xFF && receive_buffer[1]==0xD8)){
     Serial.println("No JPG Header");
     return;
   };
  
  unsigned long timer = millis();
  
-  //lcd.drawPixel(0,0, TFT_WHITE);
-  //delay(5000);
-
-  //if(!lcd.drawJpg(&file, 0, 0, 256, 192)){
-  if(!lcd.drawJpg(receive_buffer, len, 0, 0, 256, 192)){
+  if(!lcd.drawJpg(receive_buffer, len, 80, 0, 256, 192)){
     Serial.println("Error drawing jpg");
   }
   Serial.printf("Time taken: %d\n", millis() - timer);
@@ -199,6 +196,15 @@ void setup() {
   
 
   Serial.println("init done");
+
+  File border=SPIFFS.open("/heart_border.png", "r");
+  lcd.drawPng(&border,0,0,80,480);
+  border.close();
+  delay(1000);
+  File border1=SPIFFS.open("/heart_border.png", "r");
+  lcd.drawPng(&border1,720,0,80,480);
+  border.close();
+  
 
 
 
