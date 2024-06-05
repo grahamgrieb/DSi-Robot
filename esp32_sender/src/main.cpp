@@ -30,8 +30,7 @@ WebsocketsClient client;
 
 void loop()
 {
-  //Serial.println("Waiting for start signal");
-  // wait for the completion of the queued transactions
+  //set MISO to high to let DS know ESP is ready
   digitalWrite(13, HIGH);
   slave.queue(NULL, bmp_buf4, 4);
   const std::vector<size_t> received_bytes1 = slave.wait();
@@ -55,6 +54,7 @@ void loop()
   {
     return;
   }
+
   unsigned long startTime = millis();
   slave.queue(NULL, bmp_buf4, 4);
   const std::vector<size_t> received_bytes2 = slave.wait();
@@ -66,6 +66,7 @@ void loop()
   {
     return;
   }
+  //tell DS not to send any more data
   digitalWrite(13, LOW);
   Serial.println("Waiting for data");
   slave.queue(NULL, bmp_buf1, BUFFER_SIZE);
@@ -133,7 +134,7 @@ void setup()
   Serial.begin(9600);
   Serial.println("ESP32-S3 DSi");
   pinMode(46, OUTPUT);
-  digitalWrite(46, HIGH);
+  digitalWrite(46, LOW);
   if (!psramInit())
   {
     Serial.println("PSRAM FAIL");
@@ -186,5 +187,6 @@ void setup()
 
   pinMode(13, OUTPUT);
   digitalWrite(13, LOW);
+  digitalWrite(46, HIGH);
   Serial.println("Setup complete");
 }

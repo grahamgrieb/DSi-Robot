@@ -6,22 +6,29 @@
 #include <lgfx/v1/platforms/esp32s3/Bus_RGB.hpp>
 #include <SPIFFS.h>
 #include <SPI.h>
-#include <Ticker.h> //Call the ticker. H Library
 #include <ArduinoWebsockets.h>
 using namespace websockets;
+
+#define PWM_PIN_1 19          // PWM output pin
+#define DIRECTION_PIN_1 20    // Direction control pin
+#define PWM_PIN_2 38         // PWM output pin
+#define DIRECTION_PIN_2 44   // Direction control pin
+#define PWM_FREQUENCY 100000 // 100 kHz
+#define PWM_RESOLUTION 8     // 8-bit resolution
+#define PWM_CHANNEL_1 0      // PWM channel
+#define PWM_CHANNEL_2 2      // PWM channel
+#define SWITCH_INTERVAL 5000 // Interval to change direction in milliseconds
+int direction = HIGH;        // Initial direction state
 
 WebsocketsClient client;
 // Set your access point network credentials
 const char *ssid = "Graham-ESP32";
 const char *password = "123456789";
-unsigned long lastTime = 0;
+
+uint8_t movement = 4;
+TaskHandle_t Task1;
 
 SPIClass &spi = SPI;
-uint16_t touchCalibration_x0 = 300, touchCalibration_x1 = 3600, touchCalibration_y0 = 300, touchCalibration_y1 = 3600;
-uint8_t touchCalibration_rotate = 1, touchCalibration_invert_x = 2, touchCalibration_invert_y = 0;
-static int val = 100;
-
-Ticker ticker1;
 
 int i = 0;
 // #include <Arduino_GFX_Library.h>
@@ -114,11 +121,15 @@ LGFX lcd;
 void onMessageCallback(WebsocketsMessage message)
 {
   Serial.printf("Received %d bytes\n", message.length());
+
+  // received movement direction
   if (message.length() == 1)
   {
-    Serial.printf("%x\n",message.rawData().data()[0]);
+    Serial.printf("New Direction: %x\n", message.rawData().data()[0]);
+    movement = message.rawData().data()[0];
     return;
   }
+  // received JPG image
   else
   {
     auto data = message.rawData().data();
@@ -179,6 +190,55 @@ void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color
 
   lv_disp_flush_ready(disp);
 }
+// motor control loop running on core 0
+void Task1code(void *pvParameters)
+{
+  for (;;)
+  {
+    // forward movement
+    if (movement == 1)
+    {
+      ledcWrite(PWM_CHANNEL_1, 255);
+      ledcWrite(PWM_CHANNEL_2, 255);
+      direction = !direction;
+      digitalWrite(DIRECTION_PIN_1, direction);
+      digitalWrite(DIRECTION_PIN_2, !direction);
+      delay(300);
+      direction = !direction;
+      digitalWrite(DIRECTION_PIN_1, direction);
+      digitalWrite(DIRECTION_PIN_2, !direction);
+      delay(800);
+    }
+    //left movement
+    else if (movement == 2)
+    {
+      ledcWrite(PWM_CHANNEL_1, 0);
+      ledcWrite(PWM_CHANNEL_2, 255);
+      direction = !direction;
+      digitalWrite(DIRECTION_PIN_1, direction);
+      digitalWrite(DIRECTION_PIN_2, !direction);
+      delay(300);
+      direction = !direction;
+      digitalWrite(DIRECTION_PIN_1, direction);
+      digitalWrite(DIRECTION_PIN_2, !direction);
+      delay(800);
+    }
+    //right movement
+    else if (movement == 3)
+    {
+      ledcWrite(PWM_CHANNEL_1, 255);
+      ledcWrite(PWM_CHANNEL_2, 0);
+      direction = !direction;
+      digitalWrite(DIRECTION_PIN_1, direction);
+      digitalWrite(DIRECTION_PIN_2, !direction);
+      delay(300);
+      direction = !direction;
+      digitalWrite(DIRECTION_PIN_1, direction);
+      digitalWrite(DIRECTION_PIN_2, !direction);
+      delay(800);
+    }
+  }
+}
 
 void setup()
 {
@@ -232,8 +292,35 @@ void setup()
   File border1 = SPIFFS.open("/heart_border.png", "r");
   lcd.drawPng(&border1, 720, 0, 80, 480);
   border.close();
-}
 
+
+  //motor setup
+    // Initialize the PWM pin and channel
+  ledcSetup(PWM_CHANNEL_1, PWM_FREQUENCY, PWM_RESOLUTION);
+  ledcSetup(PWM_CHANNEL_2, PWM_FREQUENCY, PWM_RESOLUTION);
+  ledcAttachPin(PWM_PIN_1, PWM_CHANNEL_1);
+  ledcAttachPin(PWM_PIN_2, PWM_CHANNEL_2);
+  
+  // Start the PWM with 50% duty cycle
+  ledcWrite(PWM_CHANNEL_1, 255); // 50% of 255 (8-bit resolution)
+  ledcWrite(PWM_CHANNEL_2, 255);
+
+  // Initialize the direction pin
+  pinMode(DIRECTION_PIN_1, OUTPUT);
+  digitalWrite(DIRECTION_PIN_1, direction);
+  pinMode(DIRECTION_PIN_2, OUTPUT);
+  digitalWrite(DIRECTION_PIN_2, direction);
+
+  xTaskCreatePinnedToCore(
+      Task1code, /* Task function. */
+      "Task1",   /* name of task. */
+      10000,     /* Stack size of task */
+      NULL,      /* parameter of the task */
+      0,         /* priority of the task */
+      &Task1,    /* Task handle to keep track of created task */
+      0);        /* pin task to core 0 */
+}
+// runs on Core 1
 void loop()
 {
   while (WiFi.softAPgetStationNum() < 1)
