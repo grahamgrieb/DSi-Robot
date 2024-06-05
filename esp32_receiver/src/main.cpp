@@ -237,6 +237,12 @@ void Task1code(void *pvParameters)
       digitalWrite(DIRECTION_PIN_2, !direction);
       delay(800);
     }
+    else if (movement == 4)
+    {
+      ledcWrite(PWM_CHANNEL_1, 0);
+      ledcWrite(PWM_CHANNEL_2, 0);
+    }
+ 
   }
 }
 
