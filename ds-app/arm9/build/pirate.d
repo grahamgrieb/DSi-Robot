@@ -1,0 +1,1 @@
+pirate.o: pirate.s

@@ -64,7 +64,13 @@ arm9.o: C:/Users/sxysm/Documents/ee327/ds-app/arm9/source/arm9.cpp \
  C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/penguin.h \
  C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/rose.h \
  C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/dandelion.h \
- C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/ball.h
+ C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/ball.h \
+ C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/moustache.h \
+ C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/flappy_bird.h \
+ C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/nyan.h \
+ C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/pleading_face.h \
+ C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/top_hat.h \
+ C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/pirate.h
 C:/devkitPro/libnds/include/nds.h:
 C:/devkitPro/libnds/include/nds/libversion.h:
 C:/devkitPro/libnds/include/nds/ndstypes.h:
@@ -131,3 +137,9 @@ C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/penguin.h:
 C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/rose.h:
 C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/dandelion.h:
 C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/ball.h:
+C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/moustache.h:
+C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/flappy_bird.h:
+C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/nyan.h:
+C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/pleading_face.h:
+C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/top_hat.h:
+C:/Users/sxysm/Documents/ee327/ds-app/arm9/build/pirate.h:

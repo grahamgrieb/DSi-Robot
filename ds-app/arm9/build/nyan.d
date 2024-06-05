@@ -1,0 +1,1 @@
+nyan.o: nyan.s
