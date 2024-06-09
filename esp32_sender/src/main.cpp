@@ -30,15 +30,17 @@ WebsocketsClient client;
 
 void loop()
 {
-  //set MISO to high to let DS know ESP is ready
+  // set MISO to high to let DS know ESP is ready
   digitalWrite(13, HIGH);
+  // wait for DS to send data
   slave.queue(NULL, bmp_buf4, 4);
   const std::vector<size_t> received_bytes1 = slave.wait();
+  // if not start of data, return
   if (received_bytes1[0] != 2 && (bmp_buf4[0] != 0x44 || bmp_buf4[0] != 0x33))
   {
     return;
   }
-
+  // if movement changed, send movement to over wifi
   if (bmp_buf4[1] != movement)
   {
     movement = bmp_buf4[1];
@@ -49,12 +51,12 @@ void loop()
     }
     client.send((char *)&bmp_buf4[1], 1);
   }
-  //first byte is 0x33 which means it was just sending a direction, therefore return
+  // first byte is 0x33 which means it was just sending a direction, therefore return
   if (bmp_buf4[0] != 0x44)
   {
     return;
   }
-
+  // receive full image
   unsigned long startTime = millis();
   slave.queue(NULL, bmp_buf4, 4);
   const std::vector<size_t> received_bytes2 = slave.wait();
@@ -66,8 +68,9 @@ void loop()
   {
     return;
   }
-  //tell DS not to send any more data
+  // tell DS not to send any more data
   digitalWrite(13, LOW);
+
   Serial.println("Waiting for data");
   slave.queue(NULL, bmp_buf1, BUFFER_SIZE);
   slave.queue(NULL, bmp_buf2, BUFFER_SIZE);
@@ -81,9 +84,10 @@ void loop()
     Serial.printf("Not BMP: %d %d %d %d\n", received_bytes[0], received_bytes[1], received_bytes[2], received_bytes[3]);
     return;
   }
-
   Serial.println("Received BMP");
   Serial.printf("SPI Time: %lu ms\n", millis() - startTime);
+
+  // encode image as JPEG
   startTime = millis();
   uint8_t *bitmap = (uint8_t *)ps_calloc(98304, sizeof(uint8_t));
   // copy four buffers to bitmap buffers
@@ -116,9 +120,9 @@ void loop()
   Serial.println(iDataSize, DEC);
   Serial.printf("Encoding Time: %lu ms\n", millis() - startTime);
 
-  startTime = millis();
+  // send image over wifi
 
-  // radio.sendData(jpg_buffer, iDataSize);
+  startTime = millis();
   while (!client.available())
   {
     client = server.accept();
@@ -133,6 +137,7 @@ void setup()
 {
   Serial.begin(9600);
   Serial.println("ESP32-S3 DSi");
+  // pin 46 is BLUE LED that is on during Setup and off when done
   pinMode(46, OUTPUT);
   digitalWrite(46, LOW);
   if (!psramInit())
@@ -166,13 +171,11 @@ void setup()
   client = server.accept();
   Serial.println("Done connecting");
 
-  // webSocket.enableHeartbeat(1000,6000,3);
-
+  // pin 13 is used to tell DS that ESP is ready to receive data
   pinMode(13, OUTPUT);
   digitalWrite(13, LOW);
 
-  // to use DMA buffer, use these methods to allocate buffer
-  // dma_tx_buf = slave.allocDMABuffer(BUFFER_SIZE);
+  // SPI peripheral init code
   bmp_buf1 = slave.allocDMABuffer(BUFFER_SIZE);
   bmp_buf2 = slave.allocDMABuffer(BUFFER_SIZE);
   bmp_buf3 = slave.allocDMABuffer(BUFFER_SIZE);

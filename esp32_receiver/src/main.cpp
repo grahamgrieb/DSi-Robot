@@ -9,8 +9,8 @@
 #include <ArduinoWebsockets.h>
 using namespace websockets;
 
-#define PWM_PIN_1 19          // PWM output pin
-#define DIRECTION_PIN_1 20    // Direction control pin
+#define PWM_PIN_1 19         // PWM output pin
+#define DIRECTION_PIN_1 20   // Direction control pin
 #define PWM_PIN_2 38         // PWM output pin
 #define DIRECTION_PIN_2 44   // Direction control pin
 #define PWM_FREQUENCY 100000 // 100 kHz
@@ -198,51 +198,56 @@ void Task1code(void *pvParameters)
     // forward movement
     if (movement == 1)
     {
+      direction = LOW;
       ledcWrite(PWM_CHANNEL_1, 255);
-      ledcWrite(PWM_CHANNEL_2, 255);
+      ledcWrite(PWM_CHANNEL_2, 255); // dir low
+      // contract
+      digitalWrite(DIRECTION_PIN_1, direction);  // low makes right motor turn cw
+      digitalWrite(DIRECTION_PIN_2, !direction); // high makes left motor turn ccw
+      delay(1000);
+      // expand
       direction = !direction;
       digitalWrite(DIRECTION_PIN_1, direction);
       digitalWrite(DIRECTION_PIN_2, !direction);
       delay(300);
-      direction = !direction;
-      digitalWrite(DIRECTION_PIN_1, direction);
-      digitalWrite(DIRECTION_PIN_2, !direction);
-      delay(800);
     }
-    //left movement
+    // left movement
     else if (movement == 2)
     {
-      ledcWrite(PWM_CHANNEL_1, 0);
-      ledcWrite(PWM_CHANNEL_2, 255);
+      direction = LOW;
+      ledcWrite(PWM_CHANNEL_1, 255);
+      ledcWrite(PWM_CHANNEL_2, 200); // dir low
+      // contract
+      digitalWrite(DIRECTION_PIN_1, direction);  // low makes right motor turn cw
+      digitalWrite(DIRECTION_PIN_2, !direction); // high makes left motor turn ccw
+      delay(1000);
+      // expand
       direction = !direction;
       digitalWrite(DIRECTION_PIN_1, direction);
       digitalWrite(DIRECTION_PIN_2, !direction);
       delay(300);
-      direction = !direction;
-      digitalWrite(DIRECTION_PIN_1, direction);
-      digitalWrite(DIRECTION_PIN_2, !direction);
-      delay(800);
     }
-    //right movement
+    // right movement
     else if (movement == 3)
     {
-      ledcWrite(PWM_CHANNEL_1, 255);
-      ledcWrite(PWM_CHANNEL_2, 0);
+      direction = LOW;
+      ledcWrite(PWM_CHANNEL_1, 200);
+      ledcWrite(PWM_CHANNEL_2, 255); // dir low
+      // contract
+      digitalWrite(DIRECTION_PIN_1, direction);  // low makes right motor turn cw
+      digitalWrite(DIRECTION_PIN_2, !direction); // high makes left motor turn ccw
+      delay(1000);
+      // expand
       direction = !direction;
       digitalWrite(DIRECTION_PIN_1, direction);
       digitalWrite(DIRECTION_PIN_2, !direction);
       delay(300);
-      direction = !direction;
-      digitalWrite(DIRECTION_PIN_1, direction);
-      digitalWrite(DIRECTION_PIN_2, !direction);
-      delay(800);
     }
     else if (movement == 4)
     {
       ledcWrite(PWM_CHANNEL_1, 0);
       ledcWrite(PWM_CHANNEL_2, 0);
     }
- 
   }
 }
 
@@ -267,27 +272,14 @@ void setup()
   client.onMessage(onMessageCallback);
   client.onEvent(onEventsCallback);
 
-  // receive_buffer = (uint8_t *)ps_calloc(98358, sizeof(uint8_t));
-  // radio.setRecvBuffer(receive_buffer);
-  // radio.setRecvCallback(onDataReady);
-
-  // radio.init();
-
   lcd.init();
   lcd.setColorDepth(24);
-  // lcd.begin();
-  // lcd.fillScreen(TFT_MAGENTA);
   lcd.setTextSize(2);
   delay(200);
 
-  // lv_init();
-  // touch_init();
 
   pinMode(TFT_BL, OUTPUT);
   digitalWrite(TFT_BL, HIGH);
-
-  // ui_init();//Boot UI
-  // start timer using millis()
 
   Serial.println("init done");
 
@@ -299,14 +291,13 @@ void setup()
   lcd.drawPng(&border1, 720, 0, 80, 480);
   border.close();
 
-
-  //motor setup
-    // Initialize the PWM pin and channel
+  // motor setup
+  //  Initialize the PWM pin and channel
   ledcSetup(PWM_CHANNEL_1, PWM_FREQUENCY, PWM_RESOLUTION);
   ledcSetup(PWM_CHANNEL_2, PWM_FREQUENCY, PWM_RESOLUTION);
   ledcAttachPin(PWM_PIN_1, PWM_CHANNEL_1);
   ledcAttachPin(PWM_PIN_2, PWM_CHANNEL_2);
-  
+
   // Start the PWM with 50% duty cycle
   ledcWrite(PWM_CHANNEL_1, 255); // 50% of 255 (8-bit resolution)
   ledcWrite(PWM_CHANNEL_2, 255);
@@ -340,5 +331,4 @@ void loop()
     client.connect("192.168.4.2", 81, "/");
   }
   client.poll();
-  // lv_timer_handler();
 }
