@@ -70,7 +70,7 @@ void loop()
   }
   // tell DS not to send any more data
   digitalWrite(13, LOW);
-
+  // wait for image data
   Serial.println("Waiting for data");
   slave.queue(NULL, bmp_buf1, BUFFER_SIZE);
   slave.queue(NULL, bmp_buf2, BUFFER_SIZE);
@@ -113,14 +113,14 @@ void loop()
   {
     Serial.println("Error encoding");
   }
-
+  // done encoding
   iDataSize = jpg.close();
   free(bitmap);
   Serial.print("Output file size = ");
   Serial.println(iDataSize, DEC);
   Serial.printf("Encoding Time: %lu ms\n", millis() - startTime);
 
-  // send image over wifi
+  // send image over WiFi WebSocket
 
   startTime = millis();
   while (!client.available())
@@ -150,7 +150,7 @@ void setup()
   }
   // wifi code
   WiFi.begin(ssid, password);
-  // Wait some time to connect to wifi
+  // Wait some time to connect to host ESP wifi
   for (int i = 0; i < 10 && WiFi.status() != WL_CONNECTED; i++)
   {
     Serial.print(".");

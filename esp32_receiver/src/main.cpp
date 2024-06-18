@@ -118,6 +118,7 @@ public:
 
 LGFX lcd;
 
+// on receive data over WebSocket
 void onMessageCallback(WebsocketsMessage message)
 {
   Serial.printf("Received %d bytes\n", message.length());
@@ -133,8 +134,6 @@ void onMessageCallback(WebsocketsMessage message)
   else
   {
     auto data = message.rawData().data();
-    // print first two bytes
-    // Serial.printf("First two bytes: %02X %02X\n", receive_buffer[0], receive_buffer[1]);
     if (!(data[0] == 0xFF && data[1] == 0xD8))
     {
       Serial.println("No JPG Header");
@@ -142,13 +141,12 @@ void onMessageCallback(WebsocketsMessage message)
     };
 
     unsigned long timer = millis();
-
+    // draw JPG
     if (!lcd.drawJpg((uint8_t *)data, message.length(), 80, 0, 256, 192))
     {
       Serial.println("Error drawing jpg");
     }
     Serial.printf("Draw time: %d\n", millis() - timer);
-    // file.close();
 
     Serial.println("Drew JPG");
   }
@@ -190,7 +188,7 @@ void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color
 
   lv_disp_flush_ready(disp);
 }
-// motor control loop running on core 0
+// motor control loop running asynchronously on core 0
 void Task1code(void *pvParameters)
 {
   for (;;)
@@ -243,6 +241,7 @@ void Task1code(void *pvParameters)
       digitalWrite(DIRECTION_PIN_2, !direction);
       delay(300);
     }
+    //stop movement
     else if (movement == 4)
     {
       ledcWrite(PWM_CHANNEL_1, 0);
@@ -253,8 +252,7 @@ void Task1code(void *pvParameters)
 
 void setup()
 {
-  // put your setup code here, to run once:
-  Serial.begin(115200); // Init Display
+  Serial.begin(115200);
   if (!SPIFFS.begin())
   {
     Serial.println("An Error has occurred while mounting SPIFFS");
@@ -264,6 +262,7 @@ void setup()
   {
     Serial.println("PSRAM FAIL");
   }
+  // host WiFi network
   WiFi.softAP(ssid, password);
 
   IPAddress IP = WiFi.softAPIP();
@@ -272,17 +271,18 @@ void setup()
   client.onMessage(onMessageCallback);
   client.onEvent(onEventsCallback);
 
+  // init LCD
   lcd.init();
   lcd.setColorDepth(24);
   lcd.setTextSize(2);
   delay(200);
-
-
+  // turn on backlight
   pinMode(TFT_BL, OUTPUT);
   digitalWrite(TFT_BL, HIGH);
 
   Serial.println("init done");
 
+  // draw borders
   File border = SPIFFS.open("/heart_border.png", "r");
   lcd.drawPng(&border, 0, 0, 80, 480);
   border.close();
@@ -292,7 +292,7 @@ void setup()
   border.close();
 
   // motor setup
-  //  Initialize the PWM pin and channel
+  // Initialize the PWM pin and channel
   ledcSetup(PWM_CHANNEL_1, PWM_FREQUENCY, PWM_RESOLUTION);
   ledcSetup(PWM_CHANNEL_2, PWM_FREQUENCY, PWM_RESOLUTION);
   ledcAttachPin(PWM_PIN_1, PWM_CHANNEL_1);
@@ -308,6 +308,7 @@ void setup()
   pinMode(DIRECTION_PIN_2, OUTPUT);
   digitalWrite(DIRECTION_PIN_2, direction);
 
+  // create async task for motor
   xTaskCreatePinnedToCore(
       Task1code, /* Task function. */
       "Task1",   /* name of task. */
