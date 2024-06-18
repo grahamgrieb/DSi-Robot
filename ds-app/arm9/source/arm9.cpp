@@ -23,41 +23,19 @@ union
 
 void startScreenshot()
 {
+	// VRAM D must be set to LCD mode to capture it
 	vramSetBankD(VRAM_D_LCD);
-	REG_DISPCAPCNT = DCAP_BANK(3) | DCAP_ENABLE | DCAP_SIZE(3) | DCAP_MODE(0) | DCAP_SRC_A(0); //|DCAP_SRC_B(1);
-
-	// dmaCopy(VRAM_D, buffer, 256 * 192 * 2);
+	// use DISPLAY CAPTURE CONTROL register to start the capture
+	// start the capture and put it in VRAM D, 256x192 pixels, Source is Graphics Screen BG+3D+OBJ,
+	// capture done in background by Display Capture Unit
+	REG_DISPCAPCNT = DCAP_BANK(3) | DCAP_ENABLE | DCAP_SIZE(3) | DCAP_MODE(0) | DCAP_SRC_A(0);
 }
 bool screenshotDone()
 {
+	// check DISPLAY CAPTURE CONTROL register to see if capture is done
 	return !(REG_DISPCAPCNT & DCAP_ENABLE);
 }
 
-void screenshotbmp(u8 *buffer)
-{
-
-	vramSetBankD(VRAM_D_LCD);
-	REG_DISPCAPCNT = DCAP_BANK(3) | DCAP_ENABLE | DCAP_SIZE(3) | DCAP_MODE(0) | DCAP_SRC_A(0);
-
-	while (REG_DISPCAPCNT & DCAP_ENABLE)
-		;
-
-	for (int y = 0; y < 192; y++)
-	{
-		for (int x = 0; x < 256; x++)
-		{
-			u16 color = VRAM_D[y * 256 + x];
-
-			u8 b = (color & 31) << 3;
-			u8 g = ((color >> 5) & 31) << 3;
-			u8 r = ((color >> 10) & 31) << 3;
-
-			buffer[((y * 256) + x) * 3] = r;
-			buffer[((y * 256) + x) * 3 + 1] = g;
-			buffer[((y * 256) + x) * 3 + 2] = b;
-		}
-	}
-}
 // simple sprite struct
 typedef struct
 {
@@ -66,10 +44,9 @@ typedef struct
 	SpriteEntry *oam; // pointer to the sprite attributes in OAM
 	int gfxID;		  // graphics lovation
 } Sprite;
-//---------------------------------------------------------------------------------
+
 void initOAM(void)
 {
-	//---------------------------------------------------------------------------------
 	int i;
 
 	for (i = 0; i < 128; i++)
@@ -78,36 +55,33 @@ void initOAM(void)
 	}
 }
 
-//---------------------------------------------------------------------------------
 void updateOAM(void)
 {
-	//---------------------------------------------------------------------------------
-
 	memcpy(OAM, OAMCopy, 128 * sizeof(SpriteEntry));
 }
 
 int main(void)
 {
-
+	// boolean for if user is holding touch
 	bool holding = false;
 	touchPosition touch;
+	// mode for whatever sticker is currently selected
 	int mode = 1;
+	//current sticker index
 	int sprite_i = 0;
-	// videoSetMode(MODE_5_2D);
-	// set the video mode
+
 	initOAM();
+	// set the video mode
 	videoSetMode(MODE_5_2D |
 				 DISPLAY_SPR_ACTIVE | // turn on sprites
 				 DISPLAY_BG0_ACTIVE | // turn on background 0
 				 DISPLAY_SPR_1D		  // this is used when in tile mode
 	);
+
+	// VRAM A is used to display camera
 	vramSetBankA(VRAM_A_MAIN_BG_0x06040000);
 
-	// set bits 18 and 19 of DISPCNT register to 11
-	// REG_DISPCNT |= (3 << 18);
-
 	consoleDemoInit();
-	// consoleInit(0, 0,BgType_Text4bpp, BgSize_T_256x256, 31,0, true, true);
 
 	// initialize the buffer
 	int bg = bgInit(2, BgType_Bmp16, BgSize_B16_256x256, 16, 0); // going to VRAM_A
@@ -136,18 +110,17 @@ int main(void)
 		VRAM_F_EXT_SPR_PALETTE[4][i] = ((u16 *)ballPal)[i];
 	for (i = 0; i <= moustachePalLen; i++)
 		VRAM_F_EXT_SPR_PALETTE[5][i] = ((u16 *)moustachePal)[i];
-		
 	for (i = 0; i <= piratePalLen; i++)
 		VRAM_F_EXT_SPR_PALETTE[6][i] = ((u16 *)piratePal)[i];
 	for (i = 0; i <= top_hatPalLen; i++)
 		VRAM_F_EXT_SPR_PALETTE[7][i] = ((u16 *)top_hatPal)[i];
-
 	for (i = 0; i <= flappy_birdPalLen; i++)
 		VRAM_F_EXT_SPR_PALETTE[8][i] = ((u16 *)flappy_birdPal)[i];
 	for (i = 0; i <= nyanPalLen; i++)
 		VRAM_F_EXT_SPR_PALETTE[9][i] = ((u16 *)nyanPal)[i];
 	for (i = 0; i <= pleading_facePalLen; i++)
 		VRAM_F_EXT_SPR_PALETTE[10][i] = ((u16 *)pleading_facePal)[i];
+	// use VRAM F for sprites
 	vramSetBankF(VRAM_F_SPRITE_EXT_PALETTE);
 	u16 *puffle = oamAllocateGfx(&oamMain, SpriteSize_32x32, SpriteColorFormat_256Color);
 	u16 *penguin = oamAllocateGfx(&oamMain, SpriteSize_32x32, SpriteColorFormat_256Color);
@@ -172,29 +145,18 @@ int main(void)
 	dmaCopy(pirateTiles, pirate, pirateTilesLen);
 	dmaCopy(top_hatTiles, top_hat, top_hatTilesLen);
 
-	sysSetBusOwners(false, false); // give ARM7 access to the cart
+	sysSetBusOwners(false, false); // give ARM7 access to the cartridge slot
 
 	enableSlot1();
 
-	REG_AUXSPICNT = /*E*/ 0x8000 | /*SEL*/ 0x2000 | /*MODE*/ 0x40;
-	REG_AUXSPIDATA = 0xFF;
-	eepromWaitBusy();
-	REG_AUXSPICNT = /*MODE*/ 0x40;
 
-	u8 *temp = (u8 *)malloc(256 * 192 * 2);
 	bool screenshotted = false;
 	bool firstrun = true;
 
-	int print_count = 0;
 	bool manual_mode = true;
 
 	while (1)
 	{
-		// cardWriteCommand(card);
-		// cardEepromCommand(0x02);
-		// cardWriteEeprom(0, card, 512, 0);
-
-		// cardReadHeader(header1);
 		// wait for the next VBlank to repeat
 		swiWaitForVBlank();
 		oamUpdate(&oamMain);
@@ -202,13 +164,15 @@ int main(void)
 		camFetch(bgmem);
 
 		// auto screenshot and SPI send code
+
+		// if firstrun then start the screenshot process
 		if (firstrun)
 		{
 			firstrun = false;
 			startScreenshot();
 			screenshotted = true;
 		}
-		// check if SPI sent
+		// check if ARM7 sent the image over SPI, then start new screenshot
 		if (fifoCheckValue32(FIFO_USER_02))
 		{
 			int value = fifoGetValue32(FIFO_USER_02);
@@ -220,13 +184,13 @@ int main(void)
 				screenshotted = true;
 			}
 		}
-		// if Capture Unit is done putting capture data into VRAM D
+		// if Capture Unit is done putting capture data into VRAM D, tell ARM7 to send it out over SPI
 		if (screenshotted)
 		{
 			if (screenshotDone())
 			{
 				// tell ARM7 CPU to start sending data from VRAM D (Capture Data) over SPI
-				//sysSetBusOwners(false, false); // give ARM7 access to the cart
+				// give ARM7 control of VRAM D
 				vramSetBankD(VRAM_D_ARM7_0x06000000);
 				screenshotted = false;
 			}
@@ -235,11 +199,10 @@ int main(void)
 
 		touchRead(&touch);
 		scanKeys();
-		
-		if (keysDown() & KEY_SELECT)
-		{
-		}
-		
+
+		// check key inputs
+
+		//directional pad for robot control, tell ARM7 CPU to send the direction
 		if (keysDown() & KEY_UP)
 		{
 			fifoSendValue32(FIFO_USER_03, 1);
@@ -252,10 +215,12 @@ int main(void)
 		{
 			fifoSendValue32(FIFO_USER_03, 3);
 		}
-		if (keysUp() & (KEY_LEFT|KEY_RIGHT|KEY_UP))
+		// let go of button
+		if (keysUp() & (KEY_LEFT | KEY_RIGHT | KEY_UP))
 		{
 			fifoSendValue32(FIFO_USER_03, 4);
 		}
+		//switch between manual and auto mode
 		if (keysDown() & KEY_X)
 		{
 			if (manual_mode)
@@ -264,6 +229,7 @@ int main(void)
 			}
 			manual_mode = !manual_mode;
 		}
+		// delete sticker
 		if (keysDown() & KEY_Y)
 		{
 			if (sprite_i > 0)
@@ -285,18 +251,18 @@ int main(void)
 				);
 			}
 		}
+		// take screenshot in manual mode
 		if (keysDown() & KEY_A)
 		{
 			startScreenshot();
 			screenshotted = true;
 		}
+		// switch cameras
 		if (keysDown() & KEY_B)
-		{ // switch cameras whenever the B button is pressed
+		{
 			camSwitch();
 		}
-		if (keysDown() & KEY_START)
-		{
-		}
+		
 		// change sticker mode
 		if (keysDown() & KEY_R)
 		{
@@ -320,6 +286,8 @@ int main(void)
 				mode -= 1;
 			}
 		}
+
+		// print directions
 		iprintf("\x1b[3;4HPress B to Switch Cameras\n");
 		iprintf("\x1b[5;4HPress X to Switch Modes:\n");
 
@@ -337,38 +305,49 @@ int main(void)
 		iprintf("\n\n\nTouch and Drag to Place Sticker\n");
 		iprintf("\n  Press Y to Delete Sticker\n");
 		iprintf("\n Use L and R to Change Sticker\n");
-		// iprintf("\x1bStickers: %d\n", sprite_i);
-		if(mode==1){
+		// print current sticker mode
+		if (mode == 1)
+		{
 			iprintf("\tSticker Mode: Puffle       \n");
 		}
-		else if(mode==2){
+		else if (mode == 2)
+		{
 			iprintf("\tSticker Mode: Penguin    \n");
 		}
-		else if(mode==3){
+		else if (mode == 3)
+		{
 			iprintf("\tSticker Mode: Rose       \n");
 		}
-		else if(mode==4){
+		else if (mode == 4)
+		{
 			iprintf("\tSticker Mode: Dandelion  \n");
 		}
-		else if(mode==5){
+		else if (mode == 5)
+		{
 			iprintf("\tSticker Mode: Ball       \n");
 		}
-		else if(mode==6){
+		else if (mode == 6)
+		{
 			iprintf("\tSticker Mode: Moustache  \n");
 		}
-		else if(mode==7){
+		else if (mode == 7)
+		{
 			iprintf("\tSticker Mode: Pirate Hat \n");
 		}
-		else if(mode==8){
+		else if (mode == 8)
+		{
 			iprintf("\tSticker Mode: Top Hat    \n");
 		}
-		else if(mode==9){
+		else if (mode == 9)
+		{
 			iprintf("\tSticker Mode: Flappy Bird\n");
 		}
-		else if(mode==10){
+		else if (mode == 10)
+		{
 			iprintf("\tSticker Mode: Nyan Cat     \n");
 		}
-		else if(mode==11){
+		else if (mode == 11)
+		{
 			iprintf("\tSticker Mode: Pleading Face\n");
 		}
 
@@ -383,6 +362,7 @@ int main(void)
 		{
 			holding = true;
 		}
+		// currently holding sticker
 		else if (holding)
 		{
 			u16 *sprite_p;
@@ -431,7 +411,6 @@ int main(void)
 				sprite_p = pleading_face;
 			}
 
-			// sprites[i].oam = &OAMCopy[sprite_i];
 			// set up our sprites OAM entry attributes
 
 			oamSet(&oamMain,		   // main graphics engine context

@@ -70,7 +70,7 @@ int main()
 			int value = fifoGetValue32(FIFO_USER_03);
 			movement = (uint8_t)value;
 		}
-		//If ARM7 has VRAM D (VRAM D is set as ARM7 work bank)
+		// If ARM7 has VRAM D (VRAM D is set as ARM7 work bank)
 		if ((*(vu8 *)0x4000240) & (1 << 1))
 		{
 			if (!sent_once)
@@ -112,14 +112,13 @@ int main()
 							u8 b = ((color >> 10) & 31);
 							// convert from RGB555 to RGB565
 							rgb565.integer = (r << 11) | (g << 5) | (b);
-							// rgb565.integer=color;
-							// send in two separate bytes
 
+							// send pixel in two separate bytes
 							REG_AUXSPIDATA = rgb565.byte[0];
 							eepromWaitBusy();
+							// if reached the cap of one transaction the ESP32 can receive (32766 bytes) then start new transaction
 							if (i == 32766 || i == 98300)
 							{
-								fifoSendValue32(FIFO_USER_02, i);
 								REG_AUXSPICNT = /*MODE*/ 0x40;
 								// wait 1ms
 								swiDelay(2095);
@@ -127,9 +126,9 @@ int main()
 							}
 							REG_AUXSPIDATA = rgb565.byte[1];
 							eepromWaitBusy();
+							// if reached the cap of one transaction the ESP32 can receive (32766 bytes) then start new transaction
 							if (i == 65532)
 							{
-								fifoSendValue32(FIFO_USER_02, i);
 								REG_AUXSPICNT = /*MODE*/ 0x40;
 								// wait .25ms
 								swiDelay(2095);
@@ -139,14 +138,16 @@ int main()
 						}
 					}
 				}
-
+				// end SPI transaction
 				REG_AUXSPICNT = /*MODE*/ 0x40;
 
 				sent_once = true;
 				// send message over fifo, 12 means SPI was sent
 				fifoSendValue32(FIFO_USER_02, 12);
 			}
-			else{
+			// already sent image data
+			else
+			{
 				// read SPI
 				REG_AUXSPICNT = /*NDS Slot Enable*/ 0x8000 | /*NDS Slot Mode Serial*/ 0x2000 | /*SPI Hold Chipselect */ 0x40;
 				// start signal
@@ -160,10 +161,10 @@ int main()
 				swiDelay(8380 * 4);
 			}
 		}
+		// ARM7 does not have control of VRAM D which means ARM9 is currently taking a screenshot and ARM7 will soon have to end image over SPI
 		else
 		{
 			sent_once = false;
-			
 		}
 	}
 	return 0;
