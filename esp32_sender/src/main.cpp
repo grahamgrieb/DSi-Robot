@@ -6,8 +6,6 @@
 #include <JPEGENC.h>
 #include <ArduinoWebsockets.h>
 using namespace websockets;
-TaskHandle_t Task1;
-TaskHandle_t Task2;
 JPEGENC jpg;
 JPEGENCODE jpe;
 ESP32DMASPI::Slave slave;
