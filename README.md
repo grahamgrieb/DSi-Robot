@@ -11,7 +11,7 @@ The first part of this project is the Nintendo DSi. The DSi is running handwritt
 
 | *Close up of custom DSi Cartridge PCB and screenshots of Gerber files.* |
 |:--:|
-| <img src="./pictures/cartridge.jpg" alt="Photo of DSi and Robot" style="width:200px;"/> <img src="./pictures/cartridge_front.png" alt="Front of Gerber" style="width:200px;"/> <img src="./pictures/cartridge_back.png" alt="Back of Gerber" style="width:200px;"/>  |
+| <img src="./pictures/cartridge.jpg" alt="Photo of DSi and Robot" style="width:300px;"/> <img src="./pictures/cartridge_front.png" alt="Front of Gerber" style="height:300px;"/> <img src="./pictures/cartridge_back.png" alt="Back of Gerber" style="height:300px;"/>  |
 
 The raw bitmap image data is received over SPI on the ESP32-S3 on our custom cartridge PCB. This ESP32 is setup as SPI peripheral. It encodes the image as a JPEG (to reduce its size) and then sends it out over a WiFi WebSocket. It also receives and sends out the movement cortol signals for the robot.
 
