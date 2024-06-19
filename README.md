@@ -11,7 +11,7 @@ The first part of this project is the Nintendo DSi. The DSi is running handwritt
 
 | *DSi Application with all the Stickers Placed* |
 |:--:|
-| ![DSi App]() |
+| ![DSi App](./pictures/stickers.png) |
 
 This application takes advantage of the two CPU's on the DSi. The image data is sent out over the SPI lines in the cartridge slot. The ARM9 CPU takes care of the main application, while the ARM7 CPU sends the SPI data in the background. These CPU's communicate with each other using the IPC register.
 
