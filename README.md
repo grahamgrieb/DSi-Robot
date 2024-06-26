@@ -5,7 +5,7 @@
 
 | *Block Diagram overview of all the devices in the system* |
 |:--:|
-| ![Device Block Diagram](./pictures/device_overview.png) |
+| ![Device Block Diagram](./pictures/device_overview.jpg) |
 
 The first part of this project is the Nintendo DSi. The DSi is running handwritten homebrew code (can be found in the **ds-app** folder). This application display the current DSi webcam data on the top screen. The user is able to place stickers over the webcam footage using the touchscreen. They are also able to switch between the front and back camera of the DSi. The webcam data is sent automatically if the user is in video mode, or whenever the user hits the A button when they are in photo mode. 
 
@@ -33,7 +33,7 @@ The files for the cartridge PCB can be found in the **cartridge_pcb** folder and
 
 | *Flowchart of the software/algorithm design* |
 |:--:|
-| ![Software Flowchart](./pictures/algorithm_flowchart.png) |
+| ![Software Flowchart](./pictures/software_flowchart.jpg) |
 
 
 
