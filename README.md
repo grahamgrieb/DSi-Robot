@@ -1,4 +1,4 @@
-#### This project uses a Nintendo DSi to control a worm-like origami robot. The  DSi also streams live video data from its webcam to a TFT Display on the robot. This project involved programming custom homebrew and designing a PCB cartridge for the DSi, wireless ESP to ESP communication, image encoding, and motor control. Both the robot and DSi operate completely wirelessly.
+#### This project uses a Nintendo DSi to control a worm-like origami robot. The  DSi also streams live video data from its webcam to a TFT Display on the robot. This project involved programming custom homebrew, designing a PCB cartridge for the DSi, wireless ESP to ESP communication, image encoding, and motor control. Both the robot and DSi operate completely wirelessly.
 | *The robot and the DSi with its custom cartridge slotted in* |
 |:--:|
 | ![Photo of DSi and Robot](./pictures/ds_and_robot.png) |
